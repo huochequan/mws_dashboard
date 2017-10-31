@@ -27,16 +27,6 @@ export default new Router({
           name: 'Dashboard',
           component: Dashboard
         },
-        {
-          path: 'tasklists',
-          name: 'Tasklists',
-          component: Tasklists
-        },
-        {
-          path: 'tasklist/:id',
-          name: 'Tasklist',
-          component: Tasklist
-        },
       ]
     }
   ]
