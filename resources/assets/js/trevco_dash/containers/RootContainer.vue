@@ -1,8 +1,8 @@
 <template>
   <div class="app">
-    <AppHeader/>
+    <!-- <AppHeader/> -->
     <div class="app-body">
-      <Sidebar :navItems="nav"/>
+      <!-- <Sidebar :navItems="nav"/> -->
       <main class="main">
         <breadcrumb :list="list"/>
         <div class="container-fluid">
