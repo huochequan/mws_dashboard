@@ -6,8 +6,8 @@ import RootContainer from '../containers/RootContainer'
 
 // Views
 import Dashboard from '../views/Dashboard'
-import Tasklists from '../views/Tasklists'
-import Tasklist from '../views/Tasklist'
+// import Tasklists from '../views/Tasklists'
+// import Tasklist from '../views/Tasklist'
 
 Vue.use(Router)
 
@@ -26,16 +26,6 @@ export default new Router({
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
-        },
-        {
-          path: 'tasklists',
-          name: 'Tasklists',
-          component: Tasklists
-        },
-        {
-          path: 'tasklist/:id',
-          name: 'Tasklist',
-          component: Tasklist
         },
       ]
     }

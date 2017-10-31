@@ -1,6 +1,6 @@
 <template>
   <div class="animated fadeIn">
-    <b-jumbotron header="Team<strong>Task</strong>" header-tag="h1" lead="Teamtask project tasks" class="bd-pageheader">
+    <b-jumbotron header="Trevco<strong>DASH</strong>" header-tag="h1" lead="Order dashboard" class="bd-pageheader">
     </b-jumbotron>    
     <div class="row">
       <div class="col-sm-6 col-lg-3">
