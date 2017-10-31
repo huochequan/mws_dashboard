@@ -4,16 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8f0baa7d9c72c30bfad03447531c1fcd",
-    "content-hash": "6b547da6c7ada48a74ba8f5a83482f0f",
+    "hash": "f10f0f33fba66bfad79c209a50f76eeb",
+    "content-hash": "4d96f78e8f79cb53dfbc7d4dc0927ffb",
     "packages": [
         {
             "name": "actsmart/actsmart",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:actsmart/actsmart.git",
-                "reference": "8f6ad420141a7bcd36ea0e61044f849758744384"
+                "url": "https://github.com/actsmart/actsmart.git",
+                "reference": "72d9d8ea86990dad60c4ae4158b501cdd246f7c1"
             },
             "require": {
                 "php": "~5.6|~7.0",
@@ -69,6 +69,45 @@
                 "actsmart"
             ],
             "time": "2017-07-27 16:07:02"
+        },
+        {
+            "name": "cpigroup/php-amazon-mws",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CPIGroup/phpAmazonMWS.git",
+                "reference": "ddede7112bba41b9e6d837ec02b2d1309cd2f720"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CPIGroup/phpAmazonMWS/zipball/ddede7112bba41b9e6d837ec02b2d1309cd2f720",
+                "reference": "ddede7112bba41b9e6d837ec02b2d1309cd2f720",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "includes/classes/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "An open-source library to connect to Amazon's MWS web services in an object-oriented manner, with a focus on intuitive usage.",
+            "keywords": [
+                "amazon",
+                "api",
+                "php"
+            ],
+            "time": "2016-08-03 21:37:56"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -4726,8 +4765,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "laravel/spark": 20,
-        "actsmart/actsmart": 20
+        "actsmart/actsmart": 20,
+        "laravel/spark": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
