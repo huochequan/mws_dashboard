@@ -1,18 +1,20 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Services\Trevco\AmazonSync;
 
-use AppBundle\Exception\AmazonReportException;
+use AmazonFeed;
+use AmazonReport;
+use AmazonReportList;
 use AmazonReportRequest;
 use AmazonReportRequestList;
-use AmazonReportList;
-use AmazonReport;
-use AmazonFeed;
-use Symfony\Bridge\Twig\TwigEngine;
+use App\Exceptions\Amazon\AmazonReportException;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-abstract class AmazonService
+abstract class AmazonService extends Command
 {
     const WAIT_TIME = 120;
 
@@ -40,7 +42,7 @@ abstract class AmazonService
 
     public function __construct($reportType)
     {
-        $this->configFile = __DIR__ . '/../../../app/config/amazon-config.php';
+        $this->configFile = config_path('amazon.php');
         // $this->twig = $twig;
         $this->reportType = $reportType;
     }
@@ -51,8 +53,10 @@ abstract class AmazonService
     }
 
 
-    public function execute()
+    public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
+        $this->output = $output;
         try {
             $reportRequestId = $this->sendReportRequest();
             //$reportRequestId = 120998017240;
@@ -108,7 +112,7 @@ abstract class AmazonService
         try {
             $amazonReport = $this->fetchReport($amazonReportData);
             $this->output->writeln(sprintf('Report request with ID %s was loaded', $reportRequestId));
-            file_put_contents('var/logs/xml/' . $this->getInventoryFilename(), $amazonReport);
+            Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
             die();
         } catch (\Exception $ex) {
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
@@ -119,7 +123,7 @@ abstract class AmazonService
         if (count($products)) {
             $this->output->writeln(sprintf('Found %s products total in report', count($products)));
             $feed  = $this->buildInventoryList($products);
-            file_put_contents('var/logs/xml/' . $this->getInventoryFilename(), $feed);
+            Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $$feed);
             $this->output->writeln('Inventory report built');
 
             dump($feed); die();

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(
+            OutputInterface::class,
+            OutputStyle::class
+        );
     }
 }
