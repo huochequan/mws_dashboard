@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('lastUpdatedDate');
             $table->string('orderStatus');
             $table->string('salesChannel');
+            $table->json('fulfillmentData');
             $table->boolean('isBusinessOrder');
             $table->softDeletes();
             $table->timestamps();

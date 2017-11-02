@@ -33,14 +33,14 @@ $factory->define(App\Order::class, function (Faker\Generator $faker) {
     	'orderStatus' => 'Pending',
     	'salesChannel' => 'Amazon.com',
     	'fulfillmentData' => [
-    	'fulfillmentChannel' => 'Amazon',
-    	'shipServiceLevel' => 'SecondDay',
-    	'address' => [
-    	'city' =>'MIAMI',
-    	'state' =>'FL',
-    	'postalCode' =>'33195-2855',
-    	'country' =>'US',
-    	],      
+        	'fulfillmentChannel' => 'Amazon',
+        	'shipServiceLevel' => 'SecondDay',
+        	'address' => [
+            	'city' =>'MIAMI',
+            	'state' =>'FL',
+            	'postalCode' =>'33195-2855',
+            	'country' =>'US',
+        	],      
     	],
     	'isBusinessOrder' => 'true',
     	'orderItem' => [

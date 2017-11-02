@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use ApiTestTrait;
 use App\Order;
 use App\Repositories\OrderRepository;
 use App\User;
@@ -9,9 +10,9 @@ use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Debug\Dumper;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
-use ApiTestTrait;
 
 class OrderTest extends TestCase
 {
@@ -36,29 +37,17 @@ class OrderTest extends TestCase
 
     public function testReadOrder()
     {
-        $orderRequest = factory(Order::class)->raw();
-        $orderFulfillmentData = $orderRequest['fulfillmentData'];
-        $orderRequestOrderItems = $orderRequest['orderItem'];
-        unset($orderRequest['fulfillmentData']);
-        unset($orderRequest['orderItem']);
-        $order = Order::create($orderRequest);
-        $response = $this->json('GET', '/order/'.$order->id);
+        $order = factory(Order::class)->raw();
+        $createdOrder = $this->orderRepo->create($order);
+        $response = $this->json('GET', '/order/'.$createdOrder->id);
         $response->assertSuccessful(['id']);
     }
 
     public function testUpdateOrder()
     {
-        // $order = $this->createOrder();
-        // $editedTasklistTemplate = factory(Order::class)->raw();
-        // $response = $this->json('PUT', '/order/'.$order->id, $editedTasklistTemplate);
-        // $response->assertSuccessful();
         $this->assertTrue(false);
     }
 
-    public function testSavesViaRepository()
-    {
-    	$this->assertTrue(false);
-    }
     private function createOrder()
     {
         return factory(Order::class)->create();

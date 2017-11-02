@@ -42,15 +42,17 @@ trait MakeOrderTrait
         $fake = Faker::create();
 
         return array_merge([
-            'created_at' => $fake->date('Y-m-d H:i:s'),
-            'updated_at' => $fake->date('Y-m-d H:i:s'),
             'amazonOrderID' => $fake->word,
             'merchantOrderID' => $fake->word,
             'purchaseDate' => $fake->date('Y-m-d H:i:s'),
             'lastUpdatedDate' => $fake->date('Y-m-d H:i:s'),
             'orderStatus' => $fake->word,
             'salesChannel' => $fake->word,
-            'isBusinessOrder' => $fake->word
+            'fulfillmentData' => $fake->text,
+            'isBusinessOrder' => $fake->word,
+            'deleted_at' => $fake->date('Y-m-d H:i:s'),
+            'created_at' => $fake->date('Y-m-d H:i:s'),
+            'updated_at' => $fake->date('Y-m-d H:i:s')
         ], $orderFields);
     }
 }

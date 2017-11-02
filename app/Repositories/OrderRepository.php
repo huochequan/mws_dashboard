@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Order;
+use App\Order;
 use InfyOm\Generator\Common\BaseRepository;
 
 /**
  * Class OrderRepository
  * @package App\Repositories
- * @version November 2, 2017, 4:37 pm UTC
+ * @version November 2, 2017, 8:33 pm UTC
  *
  * @method Order findWithoutFail($id, $columns = ['*'])
  * @method Order find($id, $columns = ['*'])
@@ -26,6 +26,7 @@ class OrderRepository extends BaseRepository
         'lastUpdatedDate',
         'orderStatus',
         'salesChannel',
+        'fulfillmentData',
         'isBusinessOrder'
     ];
 
