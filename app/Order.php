@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\OrderItem;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -70,5 +71,10 @@ class Order extends Model
     public function setIsBusinessOrderAttribute($value)
     {
         return $this->attributes['isBusinessOrder'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    public function orderItem()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }
