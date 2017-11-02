@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -64,8 +64,5 @@ class Order extends Model
         
     ];
 
-    public function setIsBusinessOrderAttribute($value)
-    {
-        return $this->attributes['isBusinessOrder'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-    }    
+    
 }
