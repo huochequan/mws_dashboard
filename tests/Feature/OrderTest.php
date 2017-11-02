@@ -21,32 +21,31 @@ class OrderTest extends TestCase
 
     public function testCreateOrder()
     {
-        $orderRequest = factory(Order::class)->raw();
-        $response = $this->json('POST', '/order/', $orderRequest);
-        $response->assertSuccessful();
+        // $orderRequest = factory(Order::class)->raw();
+        // $response = $this->json('POST', '/order/', $orderRequest);
+        // $response->assertSuccessful();
+        $this->assertTrue(false);
     }
 
     public function testReadOrder()
     {
-        $order = $this->createOrder();
+        $orderRequest = factory(Order::class)->raw();
+        $orderFulfillmentData = $orderRequest['fulfillmentData'];
+        $orderRequestOrderItems = $orderRequest['orderItem'];
+        unset($orderRequest['fulfillmentData']);
+        unset($orderRequest['orderItem']);
+        $order = Order::create($orderRequest);
         $response = $this->json('GET', '/order/'.$order->id);
         $response->assertSuccessful(['id']);
     }
 
     public function testUpdateOrder()
     {
-        $order = $this->createOrder();
-        $editedTasklistTemplate = factory(Order::class)->raw();
-        $response = $this->json('PUT', '/order/'.$order->id, $editedTasklistTemplate);
-        $response->assertSuccessful();
-    }
-
-    public function testDeleteOrder()
-    {
-        $order = $this->createOrder();
-        $response = $this->json('DELETE', '/order/'.$order->id);
-        $response->assertSuccessful();
-        $this->json('GET', '/order/'.$order->id)->assertStatus(400);
+        // $order = $this->createOrder();
+        // $editedTasklistTemplate = factory(Order::class)->raw();
+        // $response = $this->json('PUT', '/order/'.$order->id, $editedTasklistTemplate);
+        // $response->assertSuccessful();
+        $this->assertTrue(false);
     }
 
     private function createOrder()

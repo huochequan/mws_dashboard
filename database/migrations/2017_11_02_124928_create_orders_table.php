@@ -16,6 +16,13 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->string('amazonOrderID')->unique();
+            $table->string('merchantOrderID')->unique();
+            $table->dateTime('purchaseDate');
+            $table->dateTime('lastUpdatedDate');
+            $table->string('orderStatus');
+            $table->string('salesChannel');
+            $table->boolean('isBusinessOrder');
         });
     }
 
