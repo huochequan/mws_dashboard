@@ -55,6 +55,7 @@ class Order extends Model
         'isBusinessOrder' => 'boolean'
     ];
 
+    protected $with = ['fulfillmentData'];
     /**
      * Validation rules
      *
@@ -67,5 +68,10 @@ class Order extends Model
     public function setIsBusinessOrderAttribute($value)
     {
         return $this->attributes['isBusinessOrder'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-    }    
+    }
+
+    public function fulfillmentData()
+    {
+        return $this->hasOne(Fulfillment::class);
+    }
 }
