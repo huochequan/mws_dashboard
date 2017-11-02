@@ -27,7 +27,9 @@ class OrderTest extends TestCase
     public function testCreateOrder()
     {
         $order = factory(Order::class)->raw();
-        $createdOrder = $this->orderRepo->create($order);
+        $orderItems = array_get($order, 'orderItem');
+        $createdOrder = $this->orderRepo->create(array_except($order, ['orderItem']));
+        $createdOrder->orderItem()->createMany($orderItems);
         $createdOrder = $createdOrder->toArray();
         $this->assertArrayHasKey('id', $createdOrder);
         $this->assertNotNull($createdOrder['id'], 'Created Order must have id specified');
