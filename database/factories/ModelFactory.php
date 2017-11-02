@@ -42,7 +42,7 @@ $factory->define(App\Order::class, function (Faker\Generator $faker) {
             	'country' =>'US',
         	],      
     	],
-    	'isBusinessOrder' => 'true',
+    	'isBusinessOrder' => true,
     	'orderItem' => [
     	0 => [
     	'aSIN' => 'B074G4GB3P',

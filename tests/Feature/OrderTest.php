@@ -32,6 +32,8 @@ class OrderTest extends TestCase
         $this->assertArrayHasKey('id', $createdOrder);
         $this->assertNotNull($createdOrder['id'], 'Created Order must have id specified');
         $this->assertNotNull(Order::find($createdOrder['id']), 'Order with given id must be in DB');
+        $this->assertModelData($order['fulfillmentData'], $createdOrder['fulfillmentData']);
+        $this->assertModelData($order['orderItem'], $createdOrder['orderItem']);
         $this->assertModelData($order, $createdOrder);
     }
 

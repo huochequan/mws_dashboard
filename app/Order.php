@@ -71,10 +71,4 @@ class Order extends Model
     {
         return $this->attributes['isBusinessOrder'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
-
-    public function setFulfillmentDataAttribute($fulfillmentData)
-    {
-        return $this->attributes['fulfillmentData']  = serialize($fulfillmentData);
-    }
-    
 }
