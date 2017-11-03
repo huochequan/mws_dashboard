@@ -1,35 +1,9 @@
 <?php
 namespace App\Services\Trevco\AmazonSync;
 
-// use Symfony\Bridge\Twig\TwigEngine;
-
-class AmazonFbaService extends AmazonService
+class AmazonOrderSyncService extends AmazonService
 {
-    // const REPORT_TYPE = '_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_'; // _GET_AFN_INVENTORY_DATA_
-    const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_LAST_UPDATE_'; // _GET_AFN_INVENTORY_DATA_
-
-    private $blackList = [
-        'DCO610BSTK-AT*',
-        'DCO611STK-AT*',
-        'DCO617BSTK-AT*',
-        'CBS261HTSTK-AT*',
-        'CBS262HTSTK-AT*',
-        'CBS263HTSTK-AT*',
-        'BM2182STK-AT*',
-	'CBS1898-STK-4x18',
-	'PERRY116STK-AT*',
-	'PERRY179STK-AT*',
-	'DCO617STK-AT*',
-	'BM2182STK-AFTH*',
-	'BAND101STK-JS*',               
-	'BAND112BSTK-AT*',
-	'BAND101STK-AT*', 
-	'BAND103STK-AT*',  
-	'BAND112CSTK-YT*',
-	'BAND113STK-AT*',
-	'BAND115STK-AT*',
-	'BAND116STK-AT*'
-    ];
+    const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_LAST_UPDATE_';
 
     public function __construct()
     {
@@ -101,9 +75,6 @@ class AmazonFbaService extends AmazonService
     {
         dump($inventory); die();
         return 0;
-        // return $this->twig->render(
-        //     'AppBundle::fba-inventory.xml.twig', ['inventory' => $inventory]
-        // );
     }
 
 

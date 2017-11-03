@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Trevco\AmazonSync\AmazonFbaService;
+use App\Services\Trevco\AmazonSync\AmazonOrderSyncService;
 use Illuminate\Console\Command;
 
 class OrderSyncService extends Command
@@ -38,7 +38,7 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
-        $service = new AmazonFbaService();
+        $service = new AmazonOrderSyncService();
         $service->execute($this->input, $this->output);
     }
 }
