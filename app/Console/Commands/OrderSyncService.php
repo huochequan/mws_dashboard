@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Trevco\AmazonReportTransformer;
 use App\Services\Trevco\AmazonSync\AmazonOrderSyncService;
 use Illuminate\Console\Command;
 
@@ -29,6 +30,7 @@ class OrderSyncService extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->reportTransformer = new AmazonReportTransformer();
     }
 
     /**
@@ -38,7 +40,8 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
-        $service = new AmazonOrderSyncService();
+        $persistenceService = new AmazonReportModelSync($this->reportTransformer);
+        $service = new AmazonOrderSyncService($persistenceService);
         $service->execute($this->input, $this->output);
     }
 }

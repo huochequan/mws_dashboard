@@ -5,9 +5,9 @@ class AmazonOrderSyncService extends AmazonService
 {
     const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_LAST_UPDATE_';
 
-    public function __construct()
+    public function __construct(AmazonReportModelSync $persistenceService)
     {
-        parent::__construct(self::REPORT_TYPE);
+        parent::__construct(self::REPORT_TYPE, $persistenceService);
     }
 
     /**

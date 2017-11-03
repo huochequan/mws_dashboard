@@ -4,7 +4,6 @@ namespace App\Services\Trevco\AmazonSync;
 use App\Repositories\OrderRepository;
 use App\Services\Trevco\AmazonReportTransformer;
 use Exception;
-use Illuminate\Support\Debug\Dumper;
 use ReflectionClass;
 
 class AmazonReportModelSync
@@ -27,7 +26,6 @@ class AmazonReportModelSync
 	{
 		foreach ($orders as $order) {
 
-	        (new Dumper)->dump($order);
 	        $orderItems = array_get($order, 'orderItem');
 	        $createdOrder = \App::make(OrderRepository::class)->create(array_except($order, ['orderItem']));
 
