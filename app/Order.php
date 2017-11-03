@@ -31,7 +31,7 @@ class Order extends Model
 
 
     protected $dates = ['deleted_at'];
-
+    protected $with = ['orderItem'];
 
     public $fillable = [
         'amazonOrderID',

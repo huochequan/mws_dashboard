@@ -22,7 +22,13 @@ class CreateOrderItemsTable extends Migration
             $table->string('productName');
             $table->integer('quantity');
             $table->json('itemPrice');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('order_id')
+                ->references('id')
+                ->on('orders')
+                ->onDelete('cascade');
         });
     }
 

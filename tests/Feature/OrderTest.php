@@ -30,26 +30,24 @@ class OrderTest extends TestCase
         $orderItems = array_get($order, 'orderItem');
         $createdOrder = $this->orderRepo->create(array_except($order, ['orderItem']));
         $createdOrder->orderItem()->createMany($orderItems);
+        $createdOrder = $createdOrder->fresh();
         $createdOrder = $createdOrder->toArray();
         $this->assertArrayHasKey('id', $createdOrder);
         $this->assertNotNull($createdOrder['id'], 'Created Order must have id specified');
         $this->assertNotNull(Order::find($createdOrder['id']), 'Order with given id must be in DB');
         $this->assertModelData($order['fulfillmentData'], $createdOrder['fulfillmentData']);
-        $this->assertModelData($order['orderItem'], $createdOrder['orderItem']);
-        $this->assertModelData($order, $createdOrder);
+        $this->assertModelData($order['orderItem'], $createdOrder['order_item']);
     }
 
     public function testReadOrder()
     {
         $order = factory(Order::class)->raw();
-        $createdOrder = $this->orderRepo->create($order);
+        $orderItems = array_get($order, 'orderItem');
+        $createdOrder = $this->orderRepo->create(array_except($order, ['orderItem']));
+        $createdOrder->orderItem()->createMany($orderItems);
+        $createdOrder = $createdOrder->fresh();
         $response = $this->json('GET', '/order/'.$createdOrder->id);
         $response->assertSuccessful(['id']);
-    }
-
-    public function testUpdateOrder()
-    {
-        $this->assertTrue(false);
     }
 
     private function createOrder()

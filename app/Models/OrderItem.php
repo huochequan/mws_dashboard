@@ -1,8 +1,7 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Order;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,7 +30,6 @@ class OrderItem extends Model
 
 
     protected $dates = ['deleted_at'];
-    protected $hidden = ['id','order_id','deleted_at', 'created_at', 'updated_at'];
 
 
     public $fillable = [
@@ -56,8 +54,8 @@ class OrderItem extends Model
         'sKU' => 'string',
         'itemStatus' => 'string',
         'productName' => 'string',
-        'quantity' => 'string',
-        'itemPrice' => 'array'
+        'quantity' => 'integer',
+        'itemPrice' => 'string'
     ];
 
     /**
@@ -74,6 +72,6 @@ class OrderItem extends Model
      **/
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(\App\Models\Order::class);
     }
 }
