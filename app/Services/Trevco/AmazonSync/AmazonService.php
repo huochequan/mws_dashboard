@@ -126,15 +126,15 @@ abstract class AmazonService extends Command
             return false;
         }
 
-        $products = $this->getProductsFromReport($amazonReport);
-        if (count($products)) {
-            $this->output->writeln(sprintf('Found %s products total in report', count($products)));
-            $feed  = $this->buildInventoryList($products);
-            $this->persistenceService->saveModels(Order::class, $amazonReport);
-            $this->output->writeln('Inventory report built');
-        } else {
-            $this->output->writeln('No products for report were found');
-        }
+        // $products = $this->getProductsFromReport($amazonReport);
+        // if (count($products)) {
+        //     $this->output->writeln(sprintf('Found %s products total in report', count($products)));
+        //     $feed  = $this->buildInventoryList($products);
+        //     $this->persistenceService->saveModels(Order::class, $amazonReport);
+        //     $this->output->writeln('Inventory report built');
+        // } else {
+        //     $this->output->writeln('No products for report were found');
+        // }
 
         return true;
     }
