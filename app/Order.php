@@ -68,6 +68,17 @@ class Order extends Model
         
     ];
 
+    public function setPurchaseDateAttribute($value)
+    {
+        return $this->attributes['purchaseDate'] = \Carbon\Carbon::parse($value);
+    }
+
+    public function setLastUpdatedDateAttribute($value)
+    {
+        return $this->attributes['lastUpdatedDate'] = \Carbon\Carbon::parse($value);
+    }
+
+
     public function setIsBusinessOrderAttribute($value)
     {
         return $this->attributes['isBusinessOrder'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);

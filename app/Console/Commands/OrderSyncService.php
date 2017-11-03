@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\Trevco\AmazonReportTransformer;
 use App\Services\Trevco\AmazonSync\AmazonOrderSyncService;
+use App\Services\Trevco\AmazonSync\AmazonReportModelSync;
 use Illuminate\Console\Command;
 
 class OrderSyncService extends Command
