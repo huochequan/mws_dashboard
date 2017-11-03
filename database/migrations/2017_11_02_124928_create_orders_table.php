@@ -16,7 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('amazonOrderID')->unique();
-            $table->string('merchantOrderID')->unique();
+            $table->string('merchantOrderID')->unique()->nullable();
             $table->dateTime('purchaseDate');
             $table->dateTime('lastUpdatedDate');
             $table->string('orderStatus');
