@@ -58,7 +58,7 @@
         <br>
       </div>
     </div> -->
-    <b-card header="Orders" class="borderless order-card">
+    <b-card header="Sales ($)" class="borderless order-card">
         <orders-chart :width="1100"/>
     </b-card>
 

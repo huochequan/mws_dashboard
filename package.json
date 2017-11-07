@@ -17,6 +17,7 @@
     "js-cookie": "^2.1.0",
     "laravel-mix": "0.*",
     "moment": "^2.10.6",
+    "moment-array-dates": "^2.0.3",
     "promise": "^7.1.1",
     "simple-line-icons": "^2.4.1",
     "sweetalert": "^1.1.3",

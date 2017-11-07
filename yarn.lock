@@ -3906,9 +3906,19 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
+moment-array-dates@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/moment-array-dates/-/moment-array-dates-2.0.3.tgz#e12f894005cb73c4c180dc4ab61b3cad86a671c3"
+  dependencies:
+    moment "^2.17.1"
+
 moment@^2.10.6:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
+
+moment@^2.17.1:
+  version "2.19.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
 
 mozjpeg@^4.0.0:
   version "4.1.1"
