@@ -2,12 +2,17 @@
   <div class="animated fadeIn">
     <b-jumbotron header="Trevco<strong>DASH</strong>" header-tag="h1" lead="Order dashboard" class="bd-pageheader">
     </b-jumbotron>    
-    <div class="row">
+<!--     <div class="row">
       <div class="col-sm-6 col-lg-3">
         <h2><strong>Lists</strong></h2>
         <br>
       </div>
-    </div>
+    </div> -->
+    <b-card header="Orders" class="borderless order-card">
+        <orders-chart :width="1100"/>
+    </b-card>
+
+
     <div class="row">
       <div class="col-sm-12 col-lg-4">
         <b-card class="bg-primary" :no-block="true">
@@ -117,10 +122,11 @@
 </template>
 
 <script>
-
+import OrdersChart from '../components/OrdersChart';
 export default {
   name: 'dashboard',
   components: {
+    OrdersChart
   },
   data: function () {
     return {

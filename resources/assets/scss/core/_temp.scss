@@ -137,3 +137,9 @@ $headings-color: #38485a;
   color: $headings-color;
   opacity: 1;
 }
+
+.borderless.order-card > .card-header{
+  background-color: transparent !important;
+  border: 0;
+  font-size: $h5-font-size;
+}

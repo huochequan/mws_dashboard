@@ -4,7 +4,7 @@
     <div class="app-body">
       <!-- <Sidebar :navItems="nav"/> -->
       <main class="main">
-        <breadcrumb :list="list"/>
+        <!-- <breadcrumb :list="list"/> -->
         <div class="container-fluid">
           <router-view></router-view>
         </div>
