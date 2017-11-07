@@ -115,6 +115,7 @@
 
 <script>
 import OrdersChart from '../components/OrdersChart';
+import axios from 'axios';
 export default {
   name: 'dashboard',
   components: {
@@ -122,6 +123,7 @@ export default {
   },
   data: function () {
     return {
+      orders: [],
       tableItems: [
         {
           action: {},
@@ -202,6 +204,14 @@ export default {
       }
       return $variant
     }
+  },
+  mounted () {
+    axios
+      .get('/order')
+      .then((response) => {
+        console.log(response.data);
+        this.orders = response.data;
+      });
   }
 }
 </script>
