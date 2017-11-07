@@ -8,6 +8,7 @@ use AmazonReportList;
 use AmazonReportRequest;
 use AmazonReportRequestList;
 use App\Exceptions\Amazon\AmazonReportException;
+use App\Order;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +32,12 @@ abstract class AmazonService extends Command
     protected $twig;
 
     /**
+     * @var AmazonReportModelSync
+     */
+    protected $persistenceService;
+
+
+    /**
      * @var OutputInterface
      */
     protected $output;
@@ -40,10 +47,10 @@ abstract class AmazonService extends Command
      */
     protected $reportType;
 
-    public function __construct($reportType)
+    public function __construct($reportType, $persistenceService)
     {
         $this->configFile = config_path('amazon.php');
-        // $this->twig = $twig;
+        $this->persistenceService = $persistenceService;
         $this->reportType = $reportType;
     }
 
@@ -113,31 +120,21 @@ abstract class AmazonService extends Command
             $amazonReport = $this->fetchReport($amazonReportData);
             $this->output->writeln(sprintf('Report request with ID %s was loaded', $reportRequestId));
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
-            die();
+            $this->persistenceService->saveModels(Order::class, $amazonReport);
         } catch (\Exception $ex) {
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
 
-        $products = $this->getProductsFromReport($amazonReport);
-        if (count($products)) {
-            $this->output->writeln(sprintf('Found %s products total in report', count($products)));
-            $feed  = $this->buildInventoryList($products);
-            Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $$feed);
-            $this->output->writeln('Inventory report built');
-
-            dump($feed); die();
-            // try {
-            //     $response = $this->sendInventoryFeed($feed);
-            //     $this->output->writeln(sprintf('Inventory report sent. Response: %s', serialize($response)));
-            //     return $response;
-            // } catch (\Exception $ex) {
-            //     $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
-            //     return false;
-            // }
-        } else {
-            $this->output->writeln('No products for report were found');
-        }
+        // $products = $this->getProductsFromReport($amazonReport);
+        // if (count($products)) {
+        //     $this->output->writeln(sprintf('Found %s products total in report', count($products)));
+        //     $feed  = $this->buildInventoryList($products);
+        //     $this->persistenceService->saveModels(Order::class, $amazonReport);
+        //     $this->output->writeln('Inventory report built');
+        // } else {
+        //     $this->output->writeln('No products for report were found');
+        // }
 
         return true;
     }
@@ -216,16 +213,10 @@ abstract class AmazonService extends Command
 
     public function fetchLastValidReportRequest($reportRequestList)
     {
-        $this->output->writeln("Complete Report Request List");
-        $this->output->writeln("============================");
-        dump($reportRequestList);
        $latestValidRequestArray =  array_filter($reportRequestList, function ($reportRequest)
         {
             return $reportRequest['ReportType'] == $this->reportType && $reportRequest['ReportProcessingStatus'] == "_DONE_";
         });
-        $this->output->writeln("Valid Report Requests");
-        $this->output->writeln("=====================");
-        dump($latestValidRequestArray);
 
        if (count($latestValidRequestArray)) {
             $latestValidRequest = reset($latestValidRequestArray);

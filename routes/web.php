@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,11 +12,12 @@
 |
 */
 
-Route::get('/', 'WelcomeController@show')->name('welcome');
+// Route::get('/', 'WelcomeController@show')->name('welcome');
 
-Route::get('/home', 'HomeController@show')->name('home');
+Route::get('/', 'HomeController@show')->name('home');
+Route::resource('/order', OrderController::class, ['except' => ['create', 'edit']]);
 
-Route::get('/slack-sign-up', 'Auth\SlackAuthController@redirectToSlack');
-Route::get('/slack-response', 'Auth\SlackAuthController@handleSlackCallback');
+// Route::get('/slack-sign-up', 'Auth\SlackAuthController@redirectToSlack');
+// Route::get('/slack-response', 'Auth\SlackAuthController@handleSlackCallback');
 
-Route::post('/slack', 'SlackIncomingController@handle');
+// Route::post('/slack', 'SlackIncomingController@handle');

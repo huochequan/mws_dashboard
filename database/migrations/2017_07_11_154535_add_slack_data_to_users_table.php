@@ -14,7 +14,7 @@ class AddSlackDataToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('team_name');
+            $table->string('team_name')->nullable();
             $table->string('team_id')->nullable()->default(null);
             $table->string('access_token')->nullable()->default(null);
             $table->string('bot_user_id')->nullable()->default(null);
