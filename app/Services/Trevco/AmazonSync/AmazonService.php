@@ -213,16 +213,10 @@ abstract class AmazonService extends Command
 
     public function fetchLastValidReportRequest($reportRequestList)
     {
-        $this->output->writeln("Complete Report Request List");
-        $this->output->writeln("============================");
-        dump($reportRequestList);
        $latestValidRequestArray =  array_filter($reportRequestList, function ($reportRequest)
         {
             return $reportRequest['ReportType'] == $this->reportType && $reportRequest['ReportProcessingStatus'] == "_DONE_";
         });
-        $this->output->writeln("Valid Report Requests");
-        $this->output->writeln("=====================");
-        dump($latestValidRequestArray);
 
        if (count($latestValidRequestArray)) {
             $latestValidRequest = reset($latestValidRequestArray);
