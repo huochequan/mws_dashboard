@@ -6,7 +6,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-warning" :no-block="true">
           <div class="card-body font-weight-bold pb-0">
-            <h2 class="order-data-value text-center mb-0">$5,000</h2>
+            <h2 class="order-data-value text-center mb-0">${{ salesToday }}</h2>
             <p class="h5 order-data-caption text-center font-weight-bold">Sales today</p>
           </div>
         </b-card>
@@ -14,7 +14,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-warning" :no-block="true">
           <div class="card-body pb-0">
-            <h2 class="order-data-value text-center mb-0">30</h2>
+            <h2 class="order-data-value text-center mb-0">{{ ordersToday }}</h2>
             <p class="h5 order-data-caption text-center font-weight-bold">Units today</p>
           </div>
         </b-card>
@@ -30,7 +30,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-warning" :no-block="true">
           <div class="card-body font-weight-bold pb-0">
-            <h2 class="order-data-value text-center mb-0">$500k</h2>
+            <h2 class="order-data-value text-center mb-0">${{ salesLast30Days }}</h2>
             <p class="h5 order-data-caption text-center font-weight-bold">Sales last 30 days</p>
           </div>
         </b-card>
@@ -52,70 +52,37 @@
         </b-card>
       </div><!--/.col-->
     </div><!--/.row-->
-<!--     <div class="row">
-      <div class="col-sm-6 col-lg-3">
-        <h2><strong>Lists</strong></h2>
-        <br>
-      </div>
-    </div> -->
     <b-card header="Sales ($)" class="borderless order-card">
-        <orders-chart :width="1100"/>
+        <orders-chart :width="1100" :orders="orders"/>
     </b-card>
-
-    <div class="row">
-      <div class="col-md-12">
-        <b-card title="<h5><strong>Upcoming tasks</strong></h5>" border-variant="light" class="borderless">
-          <b-table class="table-task-list mb-0" hover responsive 
-            :items="tableItems"
-            :fields="tableFields"
-            head-variant="light"
-            >
-            <template slot="action" scope="item">
-              <div class="avatar">
-              <i class="fa fa-check-circle-o fa-lg light-faded"></i>
-              </div>
-            </template>
-            <template slot="tasklist" scope="item">
-              <div class="task-entry bolder">
-                {{item.value.name}}
-                <b-button size="sm" variant="outline-primary" class="btn-edit borderless">
-                  <i class="fa fa-pencil"></i>
-                </b-button>
-              </div>
-              <div class="small text-muted">
-               <span class="bolder faded">{{item.value.detail}}</span> |
-                <span>
-                  <template v-if="item.value.new"><strong>Once</strong></template>
-                  <template v-else><strong>Recurring</strong></template>
-                </span>
-              </div>
-            </template>
-            <template slot="due" scope="item">
-              <strong>{{ item.value.date }}</strong>
-            </template>
-            <template slot="state" scope="item">
-              <div class="clearfix">
-                <div class="float-left">
-                  <b-form-radio id="btnradios2"
-                    class="mb-4"
-                    buttons
-                    button-variant="outline-primary borderless"
-                    size="sm"
-                    v-model="item.value"
-                    :options="statusOptions" />
-                </div>
-              </div>
-            </template>
-          </b-table>
-        </b-card>
-      </div><!--/.col-->
-    </div><!--/.row-->
   </div>
 </template>
 
 <script>
 import OrdersChart from '../components/OrdersChart';
 import axios from 'axios';
+import * as moment from 'moment';
+var arraySum = (x, y) =>{
+  return x+y;
+}
+var round2Fixed = (value) => {
+  value = +value;
+
+  if (isNaN(value))
+    return NaN;
+
+  // Shift
+  value = value.toString().split('e');
+  value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + 2) : 2)));
+
+  // Shift back
+  value = value.toString().split('e');
+  return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
+}
+
+var last30Days = (order) => { return moment(order.purchaseDate).isBetween(moment().startOf('day').subtract(30, 'day'), moment().endOf('day'))};
+var sameDay = (order) => { return moment().isSame(order.purchaseDate, 'day')};
+
 export default {
   name: 'dashboard',
   components: {
@@ -209,9 +176,50 @@ export default {
     axios
       .get('/order')
       .then((response) => {
-        console.log(response.data);
-        this.orders = response.data;
+        // console.log(response.data);
+        this.orders = response.data.data;
       });
+  },
+  computed: {
+    salesTotal() {
+      var sT = this.orders.map((order) => {
+        var order_items_total = order.order_item.map((item) => {
+          return [].concat(item.itemPrice.component).reduce((x,y)=>{
+            return parseFloat(x)+parseFloat(y.amount);
+          }, 0);
+        });
+        return order_items_total.reduce(arraySum, 0);
+      });
+      return round2Fixed(sT.reduce(arraySum, 0));
+    },
+    salesToday() {
+      var sT = this.orders.filter(sameDay).map((order) => {
+        var order_items_total = order.order_item.map((item) => {
+          return [].concat(item.itemPrice.component).reduce((x,y)=>{
+            return parseFloat(x)+parseFloat(y.amount);
+          }, 0);
+        });
+        return order_items_total.reduce(arraySum, 0);
+      });
+      return round2Fixed(sT.reduce(arraySum, 0));
+    },
+    salesLast30Days() {
+      var sT = this.orders.filter(last30Days).map((order) => {
+        var order_items_total = order.order_item.map((item) => {
+          return [].concat(item.itemPrice.component).reduce((x,y)=>{
+            return parseFloat(x)+parseFloat(y.amount);
+          }, 0);
+        });
+        return order_items_total.reduce(arraySum, 0);
+      });
+      return round2Fixed(sT.reduce(arraySum, 0));
+    },
+    orderCountLast30Days() {
+      return this.orders.filter(last30Days).length;
+    },
+    ordersToday() {
+      return this.orders.filter(sameDay).length;
+    }
   }
 }
 </script>
