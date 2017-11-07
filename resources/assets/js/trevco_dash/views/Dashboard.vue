@@ -1,7 +1,57 @@
 <template>
   <div class="animated fadeIn">
-    <b-jumbotron header="Trevco<strong>DASH</strong>" header-tag="h1" lead="Order dashboard" class="bd-pageheader">
-    </b-jumbotron>    
+<!--     <b-jumbotron header="Trevco<strong>DASH</strong>" header-tag="h1" lead="Order dashboard" class="bd-pageheader">
+    </b-jumbotron>     -->
+    <div class="row bd-pageheader">
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body font-weight-bold pb-0">
+            <h2 class="order-data-value text-center mb-0">$5,000</h2>
+            <p class="h5 order-data-caption text-center font-weight-bold">Sales today</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body pb-0">
+            <h2 class="order-data-value text-center mb-0">30</h2>
+            <p class="h5 order-data-caption text-center font-weight-bold">Units today</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body pb-0">
+            <h2 class="order-data-value text-center mb-0">+ 70%</h2>
+            <p class="h5 order-data-caption text-center font-weight-bold">Previous 30 days</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body font-weight-bold pb-0">
+            <h2 class="order-data-value text-center mb-0">$500k</h2>
+            <p class="h5 order-data-caption text-center font-weight-bold">Sales last 30 days</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body pb-0">
+            <h2 class="order-data-value text-center mb-0">300</h2>
+            <p class="h5 order-data-caption text-center font-weight-bold">FBM Orders to ship</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+      <div class="col-sm-12 col-lg-2">
+        <b-card class="order-detail-card bg-warning" :no-block="true">
+          <div class="card-body pb-0">
+            <h3 class="order-data-value text-center mb-0">+ 20%</h3>
+            <p class="h5 order-data-caption text-center font-weight-bold">Yesterday</p>
+          </div>
+        </b-card>
+      </div><!--/.col-->
+    </div><!--/.row-->
 <!--     <div class="row">
       <div class="col-sm-6 col-lg-3">
         <h2><strong>Lists</strong></h2>
@@ -11,64 +61,6 @@
     <b-card header="Orders" class="borderless order-card">
         <orders-chart :width="1100"/>
     </b-card>
-
-
-    <div class="row">
-      <div class="col-sm-12 col-lg-4">
-        <b-card class="bg-primary" :no-block="true">
-          <div class="card-body font-weight-bold pb-0">
-            <b-dropdown class="float-right" variant="transparent p-0" right>
-              <template slot="button-content">
-                <i class="icon-settings"></i>
-              </template>
-              <b-dropdown-item>Action</b-dropdown-item>
-              <b-dropdown-item>Another action</b-dropdown-item>
-              <b-dropdown-item>Something else here...</b-dropdown-item>
-              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
-            </b-dropdown>
-            <div class="h1 text-right mb-4"><i class="icon-pie-chart"></i></div>
-            <h4 class="mb-0">15</h4>
-            <p class="h2 font-weight-bold">Active</p>
-          </div>
-        </b-card>
-      </div><!--/.col-->
-      <div class="col-sm-12 col-lg-4">
-        <b-card class="bg-info" :no-block="true">
-          <div class="card-body pb-0">
-            <b-dropdown class="float-right" variant="transparent p-0" right>
-              <template slot="button-content">
-                <i class="icon-settings"></i>
-              </template>
-              <b-dropdown-item>Action</b-dropdown-item>
-              <b-dropdown-item>Another action</b-dropdown-item>
-              <b-dropdown-item>Something else here...</b-dropdown-item>
-              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
-            </b-dropdown>
-            <div class="h1 text-right mb-4"><i class="icon-pie-chart"></i></div>
-            <h4 class="mb-0">5</h4>
-            <p class="h2 font-weight-bold">Paused</p>
-          </div>
-        </b-card>
-      </div><!--/.col-->
-      <div class="col-sm-12 col-lg-4">
-        <b-card class="bg-warning" :no-block="true">
-          <div class="card-body pb-0">
-            <b-dropdown class="float-right" variant="transparent p-0" right>
-              <template slot="button-content">
-                <i class="icon-settings"></i>
-              </template>
-              <b-dropdown-item>Action</b-dropdown-item>
-              <b-dropdown-item>Another action</b-dropdown-item>
-              <b-dropdown-item>Something else here...</b-dropdown-item>
-              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
-            </b-dropdown>
-            <div class="h1 text-right mb-4"><i class="icon-pie-chart"></i></div>
-            <h4 class="mb-0">6</h4>
-            <p class="h2 font-weight-bold">Templates</p>
-          </div>
-        </b-card>
-      </div><!--/.col-->
-    </div><!--/.row-->
 
     <div class="row">
       <div class="col-md-12">

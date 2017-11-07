@@ -14,7 +14,7 @@
 
 // temp fix for Vue & React
 
-$headings-color: #38485a;
+$headings-color: #7F303C;
 // Open state for the dropdown
 .open, .show {
   // Show the menu
@@ -55,11 +55,11 @@ $headings-color: #38485a;
 
 
 .bd-pageheader {
-  margin: -1.6rem -1.9rem 3rem -1.9rem;
-  padding-bottom: 4rem;
+  margin: -1.6rem -1.9rem 0.1rem -1.9rem;
+  padding-bottom: 2rem;
   padding-top: 4rem;
   text-align: left;  
-  background-color: #6a90bd;
+  background-color: #B23145;
   color: #fff;
 }
 
@@ -142,4 +142,17 @@ $headings-color: #38485a;
   background-color: transparent !important;
   border: 0;
   font-size: $h5-font-size;
+  background-color: rgb(38, 38, 38) !important;
+}
+.borderless.order-card > .card-block{
+  background-color: rgb(38, 38, 38) !important;
+}
+
+.order-detail-card {
+  min-height: 10rem;
+  padding-top: 1.5rem;
+}
+
+.container-fluid {
+  background-color: rgb(38, 38, 38) !important;
 }
