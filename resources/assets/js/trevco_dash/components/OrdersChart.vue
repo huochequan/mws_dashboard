@@ -84,6 +84,12 @@ export default Bar.extend({
         }
       ]
     }, {
+      legend: {
+        display: true,
+        labels: {
+          fontColor: '#fff'
+        }
+      },
       scales: {
         xAxes: [{
           stacked: true,

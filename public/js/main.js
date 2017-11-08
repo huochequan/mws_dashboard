@@ -54270,6 +54270,12 @@ var round2Fixed = function round2Fixed(value) {
           data: this.dailyFBMSalesArray
         }]
       }, {
+        legend: {
+          display: true,
+          labels: {
+            fontColor: '#fff'
+          }
+        },
         scales: {
           xAxes: [{
             stacked: true,
