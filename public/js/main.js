@@ -48015,14 +48015,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_chartjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_chartjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment_array_dates__ = __webpack_require__(745);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment_array_dates__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_chart_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_moment__);
+
+
 
 
 
 
 var sameDay = function sameDay(order) {
-  return __WEBPACK_IMPORTED_MODULE_2_moment__().isSame(order.purchaseDate, 'day');
+  return __WEBPACK_IMPORTED_MODULE_3_moment__().isSame(order.purchaseDate, 'day');
 };
 var arraySum = function arraySum(x, y) {
   return x + y;
@@ -48040,6 +48044,7 @@ var round2Fixed = function round2Fixed(value) {
   value = value.toString().split('e');
   return (+(value[0] + 'e' + (value[1] ? +value[1] - 2 : -2))).toFixed(2);
 };
+__WEBPACK_IMPORTED_MODULE_2_chart_js___default.a.defaults.global.defaultFontFamily = '"Signika",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0_vue_chartjs__["Bar"].extend({
   props: {
     'orders': {
@@ -48055,9 +48060,9 @@ var round2Fixed = function round2Fixed(value) {
   },
   watch: {
     orders: function orders(newOrders) {
-      this.dailyFBASalesArray = __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.lastNDays(30, '', true).map(function (day) {
+      this.dailyFBASalesArray = __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.range(__WEBPACK_IMPORTED_MODULE_3_moment__().subtract(30, 'days'), __WEBPACK_IMPORTED_MODULE_3_moment__(), '', true).map(function (day) {
         var dayOrders = newOrders.filter(function (order) {
-          return __WEBPACK_IMPORTED_MODULE_2_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Amazon";
+          return __WEBPACK_IMPORTED_MODULE_3_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Amazon";
         });
         var dayOrdersSales = dayOrders.map(function (order) {
           var order_items_total = order.order_item.map(function (item) {
@@ -48071,9 +48076,9 @@ var round2Fixed = function round2Fixed(value) {
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0));
       });
 
-      this.dailyFBMSalesArray = __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.lastNDays(30, '', true).map(function (day) {
+      this.dailyFBMSalesArray = __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.range(__WEBPACK_IMPORTED_MODULE_3_moment__().subtract(30, 'days'), __WEBPACK_IMPORTED_MODULE_3_moment__(), '', true).map(function (day) {
         var dayOrders = newOrders.filter(function (order) {
-          return __WEBPACK_IMPORTED_MODULE_2_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Merchant";
+          return __WEBPACK_IMPORTED_MODULE_3_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Merchant";
         });
         var dayOrdersSales = dayOrders.map(function (order) {
           var order_items_total = order.order_item.map(function (item) {
@@ -48091,7 +48096,7 @@ var round2Fixed = function round2Fixed(value) {
   methods: {
     rerenderChart: function rerenderChart() {
       this.renderChart({
-        labels: __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.lastNDays(30, 'MMM DD', true),
+        labels: __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.range(__WEBPACK_IMPORTED_MODULE_3_moment__().subtract(30, 'days'), __WEBPACK_IMPORTED_MODULE_3_moment__(), 'MMM DD', true),
         datasets: [{
           label: 'FBA',
           backgroundColor: '#7F0A1B',
@@ -48105,16 +48110,25 @@ var round2Fixed = function round2Fixed(value) {
         legend: {
           display: true,
           labels: {
-            fontColor: '#fff'
+            fontColor: '#fff',
+            fontSize: 20
           }
         },
         scales: {
           xAxes: [{
             stacked: true,
-            barThickness: 40
+            barThickness: 40,
+            ticks: {
+              fontSize: 12,
+              fontColor: '#fff'
+            }
           }],
           yAxes: [{
-            stacked: true
+            stacked: true,
+            ticks: {
+              fontSize: 18,
+              fontColor: '#fff'
+            }
           }]
         },
         responsive: true });
@@ -48123,7 +48137,7 @@ var round2Fixed = function round2Fixed(value) {
   mounted: function mounted() {
     // Overwriting base render method with actual data.
     this.renderChart({
-      labels: __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.lastNDays(30, 'MMM DD', true),
+      labels: __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.range(__WEBPACK_IMPORTED_MODULE_3_moment__().subtract(30, 'days'), __WEBPACK_IMPORTED_MODULE_3_moment__(), 'MMM DD', true),
       datasets: [{
         label: 'FBA',
         backgroundColor: '#7F0A1B',
@@ -48500,6 +48514,12 @@ var last30Days = function last30Days(order) {
 var sameDay = function sameDay(order) {
   return __WEBPACK_IMPORTED_MODULE_2_moment__().isSame(order.purchaseDate, 'day');
 };
+var yesterday = function yesterday(order) {
+  return __WEBPACK_IMPORTED_MODULE_2_moment__().subtract(1, 'day').isSame(order.purchaseDate, 'day');
+};
+var unshippedByMerchant = function unshippedByMerchant(order) {
+  return order.orderStatus !== "Shipped" && order.fulfillmentData.fulfillmentChannel == "Merchant";
+};
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'dashboard',
@@ -48558,6 +48578,17 @@ var sameDay = function sameDay(order) {
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
+    salesYesterday: function salesYesterday() {
+      var sT = this.orders.filter(yesterday).map(function (order) {
+        var order_items_total = order.order_item.map(function (item) {
+          return [].concat(item.itemPrice.component).reduce(function (x, y) {
+            return parseFloat(x) + parseFloat(y.amount);
+          }, 0);
+        });
+        return order_items_total.reduce(arraySum, 0);
+      });
+      return round2Fixed(sT.reduce(arraySum, 0));
+    },
     salesLast30Days: function salesLast30Days() {
       var sT = this.orders.filter(last30Days).map(function (order) {
         var order_items_total = order.order_item.map(function (item) {
@@ -48567,15 +48598,22 @@ var sameDay = function sameDay(order) {
         });
         return order_items_total.reduce(arraySum, 0);
       });
-      console.log();
       return round2Fixed(sT.reduce(arraySum, 0));
-      // return kFormatter(5202102.23);
     },
     orderCountLast30Days: function orderCountLast30Days() {
-      return kFormatter(this.orders.filter(last30Days).length);
+      return kFormatter(this.orders.filter(last30Days).length) || "--";
     },
     ordersToday: function ordersToday() {
-      return kFormatter(this.orders.filter(sameDay).length);
+      return kFormatter(this.orders.filter(sameDay).length) || "--";
+    },
+    percentageDiffSalesYesterday: function percentageDiffSalesYesterday() {
+      return parseInt(Math.abs((this.salesToday - this.salesYesterday) / this.salesYesterday * 100)) || "--";
+    },
+    percentageDiffSalesYesterdaySign: function percentageDiffSalesYesterdaySign() {
+      return this.salesToday > this.salesYesterday ? "+" : this.salesToday == this.salesYesterday ? "" : "-";
+    },
+    unshippedCount: function unshippedCount() {
+      return this.orders.filter(unshippedByMerchant).length || "--";
     }
   }
 });
@@ -71246,7 +71284,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-body pb-0"
   }, [_c('h1', {
     staticClass: "order-data-value text-center mb-0"
-  }, [_vm._v("300")]), _vm._v(" "), _c('p', {
+  }, [_vm._v(_vm._s(_vm.unshippedCount))]), _vm._v(" "), _c('p', {
     staticClass: "h5 order-data-caption text-center font-weight-bold"
   }, [_vm._v("FBM Orders to ship")])])])], 1), _vm._v(" "), _c('div', {
     staticClass: "col-sm-12 col-lg-2"
@@ -71259,7 +71297,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-body pb-0"
   }, [_c('h1', {
     staticClass: "order-data-value text-center mb-0"
-  }, [_vm._v("+ 20%")]), _vm._v(" "), _c('p', {
+  }, [_vm._v(_vm._s(_vm.percentageDiffSalesYesterdaySign) + " " + _vm._s(_vm.percentageDiffSalesYesterday) + "%")]), _vm._v(" "), _c('p', {
     staticClass: "h5 order-data-caption text-center font-weight-bold"
   }, [_vm._v("Yesterday")])])])], 1)]), _vm._v(" "), _c('b-card', {
     staticClass: "borderless order-card",

@@ -18,10 +18,10 @@ class CreateOrderItemsTable extends Migration
             $table->integer('order_id')->unsigned();
             $table->string('aSIN');
             $table->string('sKU');
-            $table->string('itemStatus');
+            $table->string('itemStatus')->nullable();
             $table->string('productName');
             $table->integer('quantity');
-            $table->json('itemPrice');
+            $table->json('itemPrice')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

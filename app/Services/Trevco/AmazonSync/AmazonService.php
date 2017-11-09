@@ -214,15 +214,17 @@ abstract class AmazonService extends Command
 
     public function fetchLastValidReportRequest($reportRequestList)
     {
-       $latestValidRequestArray =  array_filter($reportRequestList, function ($reportRequest)
+       $validRequestArray =  array_filter($reportRequestList, function ($reportRequest)
         {
             return $reportRequest['ReportType'] == $this->reportType && $reportRequest['ReportProcessingStatus'] == "_DONE_";
         });
 
-       if (count($latestValidRequestArray)) {
-            $latestValidRequest = reset($latestValidRequestArray);
+       if (count($validRequestArray)) {
+            $latestValidRequest = array_reduce($validRequestArray, function ($acc, $request)
+            {
+                return Carbon::parse($acc['SubmittedDate'])->gt(Carbon::parse($request['SubmittedDate'])) ? $acc : $request;
+            }, reset($validRequestArray));
             $this->output->writeln(sprintf('Found a VALID report with another request id %s', $latestValidRequest["ReportRequestId"]));
-
        }
        return empty($latestValidRequest) ? null: $latestValidRequest;
     }

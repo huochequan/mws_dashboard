@@ -1,6 +1,8 @@
 <script>
 import { Bar } from 'vue-chartjs'
 import dateArray from 'moment-array-dates';
+import Chart from 'chart.js'
+
 import * as moment from 'moment';
 var sameDay = (order) => { return moment().isSame(order.purchaseDate, 'day')};
 var arraySum = (x, y) =>{
@@ -20,6 +22,7 @@ var round2Fixed = (value) => {
   value = value.toString().split('e');
   return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
 }
+Chart.defaults.global.defaultFontFamily = '"Signika",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 export default Bar.extend({
   props: {
     'orders': {
@@ -35,7 +38,7 @@ export default Bar.extend({
   },
   watch: {
     orders: function(newOrders) {
-      this.dailyFBASalesArray = dateArray.lastNDays(30, '', true).map(function(day) {
+      this.dailyFBASalesArray = dateArray.range(moment().subtract(30,'days'),moment(), '', true).map(function(day) {
         var dayOrders = newOrders.filter((order) => {
               return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Amazon");
             })
@@ -51,7 +54,7 @@ export default Bar.extend({
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
       })
 
-      this.dailyFBMSalesArray = dateArray.lastNDays(30, '', true).map(function(day) {
+      this.dailyFBMSalesArray = dateArray.range(moment().subtract(30,'days'),moment(), '', true).map(function(day) {
         var dayOrders = newOrders.filter((order) => {
               return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Merchant");
             })
@@ -71,7 +74,7 @@ export default Bar.extend({
   methods: {
     rerenderChart () {
     this.renderChart({
-      labels: dateArray.lastNDays(30, 'MMM DD', true),
+      labels: dateArray.range(moment().subtract(30,'days'),moment(), 'MMM DD', true),
       datasets: [
         {
           label: 'FBA',
@@ -89,15 +92,24 @@ export default Bar.extend({
         display: true,
         labels: {
           fontColor: '#fff',
+          fontSize: 20
         }
       },
       scales: {
         xAxes: [{
           stacked: true,
-          barThickness: 40
+          barThickness: 40,
+          ticks:{
+            fontSize: 12,
+            fontColor: '#fff'
+          }
         }],
         yAxes: [{
-          stacked: true
+          stacked: true,
+          ticks:{
+            fontSize: 18,
+            fontColor: '#fff'
+          }
         }]
       },
       responsive: true})
@@ -106,7 +118,7 @@ export default Bar.extend({
   mounted () {
     // Overwriting base render method with actual data.
     this.renderChart({
-      labels: dateArray.lastNDays(30, 'MMM DD', true),
+      labels: dateArray.range(moment().subtract(30,'days'),moment(), 'MMM DD', true),
       datasets: [
         {
           label: 'FBA',

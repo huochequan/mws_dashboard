@@ -38,7 +38,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-darken" :no-block="true">
           <div class="card-body pb-0">
-            <h1 class="order-data-value text-center mb-0">300</h1>
+            <h1 class="order-data-value text-center mb-0">{{ unshippedCount }}</h1>
             <p class="h5 order-data-caption text-center font-weight-bold">FBM Orders to ship</p>
           </div>
         </b-card>
@@ -46,7 +46,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-darken" :no-block="true">
           <div class="card-body pb-0">
-            <h1 class="order-data-value text-center mb-0">+ 20%</h1>
+            <h1 class="order-data-value text-center mb-0">{{ percentageDiffSalesYesterdaySign }} {{ percentageDiffSalesYesterday }}%</h1>
             <p class="h5 order-data-caption text-center font-weight-bold">Yesterday</p>
           </div>
         </b-card>
@@ -89,6 +89,8 @@ var round2Fixed = (value) => {
 
 var last30Days = (order) => { return moment(order.purchaseDate).isBetween(moment().startOf('day').subtract(30, 'day'), moment().endOf('day'))};
 var sameDay = (order) => { return moment().isSame(order.purchaseDate, 'day')};
+var yesterday = (order) => { return moment().subtract(1,'day').isSame(order.purchaseDate, 'day')};
+var unshippedByMerchant = (order) => { return (order.orderStatus !== "Shipped") && (order.fulfillmentData.fulfillmentChannel == "Merchant")};
 
 export default {
   name: 'dashboard',
@@ -146,6 +148,17 @@ export default {
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
+    salesYesterday() {
+      var sT = this.orders.filter(yesterday).map((order) => {
+        var order_items_total = order.order_item.map((item) => {
+          return [].concat(item.itemPrice.component).reduce((x,y)=>{
+            return parseFloat(x)+parseFloat(y.amount);
+          }, 0);
+        });
+        return order_items_total.reduce(arraySum, 0);
+      });
+      return round2Fixed(sT.reduce(arraySum, 0));
+    },
     salesLast30Days() {
       var sT = this.orders.filter(last30Days).map((order) => {
         var order_items_total = order.order_item.map((item) => {
@@ -155,15 +168,22 @@ export default {
         });
         return order_items_total.reduce(arraySum, 0);
       });
-      console.log()
       return round2Fixed(sT.reduce(arraySum, 0));
-      // return kFormatter(5202102.23);
     },
     orderCountLast30Days() {
-      return kFormatter(this.orders.filter(last30Days).length);
+      return kFormatter(this.orders.filter(last30Days).length) || "--";
     },
     ordersToday() {
-      return kFormatter(this.orders.filter(sameDay).length);
+      return kFormatter(this.orders.filter(sameDay).length) || "--";
+    },
+    percentageDiffSalesYesterday() {
+      return parseInt(Math.abs((this.salesToday - this.salesYesterday) / this.salesYesterday * 100)) || "--";
+    },
+    percentageDiffSalesYesterdaySign() {
+      return this.salesToday > this.salesYesterday ? "+" : this.salesToday == this.salesYesterday ? "" : "-";
+    },
+    unshippedCount() {
+      return this.orders.filter(unshippedByMerchant).length || "--";
     }
   }
 }
