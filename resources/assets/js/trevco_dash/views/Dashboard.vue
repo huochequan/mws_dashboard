@@ -66,7 +66,12 @@ var arraySum = (x, y) =>{
   return x+y;
 }
 
-var kFormatter = num => num > 999 ? (num/1000).toFixed(1) + 'k' : num;
+var kFormatter = num => (num > 999999) ? floorFigure((num/1000000)) + 'm' : (num > 99999) ? floorFigure((num/1000), 0) + 'k' : (num > 9999) ? floorFigure((num/1000), 1) + 'k' : num;
+var floorFigure = (figure, decimals) => {
+    if (decimals == undefined) decimals = 2;
+    var d = Math.pow(10,decimals);
+    return (parseInt(figure*d)/d).toFixed(decimals);
+}
 var round2Fixed = (value) => {
   value = +value;
 
@@ -150,7 +155,9 @@ export default {
         });
         return order_items_total.reduce(arraySum, 0);
       });
+      console.log()
       return round2Fixed(sT.reduce(arraySum, 0));
+      // return kFormatter(5202102.23);
     },
     orderCountLast30Days() {
       return kFormatter(this.orders.filter(last30Days).length);
