@@ -27,7 +27,7 @@ class AmazonReportModelSync
 		foreach ($orders as $order) {
 
 	        $orderItems = array_get($order, 'orderItem');
-	        $createdOrder = \App::make(OrderRepository::class)->create(array_except($order, ['orderItem']));
+	        $createdOrder = \App::make(OrderRepository::class)->updateOrCreate(array_only($order, ['amazonOrderID', 'merchantOrderID']),array_except($order, ['orderItem']));
 
 	        if (empty($orderItems[0])) {
 	        	$createdOrder->orderItem()->create($orderItems);

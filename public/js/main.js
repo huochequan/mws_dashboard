@@ -71155,15 +71155,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "app-footer"
   }, [_c('a', {
     attrs: {
-      "href": "http://coreui.io"
+      "href": "http://trevcoinc.com/"
     }
-  }, [_vm._v("CoreUI")]), _vm._v(" © 2017 creativeLabs.\n  "), _c('span', {
+  }, [_vm._v("TrevcoDash")]), _vm._v(" © 2017 momentum integration\n  "), _c('span', {
     staticClass: "float-right"
   }, [_vm._v("Powered by "), _c('a', {
     attrs: {
-      "href": "http://coreui.io"
+      "href": "www.momentumintegration.com/"
     }
-  }, [_vm._v("CoreUI")])])])
+  }, [_vm._v("Momentum Integration")])])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
