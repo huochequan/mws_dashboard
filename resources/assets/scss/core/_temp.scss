@@ -59,7 +59,7 @@ $headings-color: #7F303C;
   padding-bottom: 2rem;
   padding-top: 4rem;
   text-align: left;  
-  background-color: #B23145;
+  background-color: #cc0f2b;
   color: #fff;
 }
 
@@ -155,4 +155,12 @@ $headings-color: #7F303C;
 
 .container-fluid {
   background-color: rgb(38, 38, 38) !important;
+}
+.card.bg-darken {
+  background-color: #262626;
+  border: 0;
+
+  h1 {
+    font-size: 3rem;
+  }
 }

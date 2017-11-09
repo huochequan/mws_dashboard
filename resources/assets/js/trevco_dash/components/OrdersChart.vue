@@ -73,12 +73,12 @@ export default Bar.extend({
       labels: dateArray.lastNDays(30, 'MMM DD', true),
       datasets: [
         {
-          label: 'Fulfilled By Amazon',
+          label: 'FBA',
           backgroundColor: '#7F0A1B',
           data: this.dailyFBASalesArray,
         },
         {
-          label: 'Fulfilled By Trevco',
+          label: 'FBM',
           backgroundColor: '#CC102C',
           data: this.dailyFBMSalesArray
         }
@@ -87,7 +87,7 @@ export default Bar.extend({
       legend: {
         display: true,
         labels: {
-          fontColor: '#fff'
+          fontColor: '#fff',
         }
       },
       scales: {
@@ -108,12 +108,12 @@ export default Bar.extend({
       labels: dateArray.lastNDays(30, 'MMM DD', true),
       datasets: [
         {
-          label: 'Fulfilled By Amazon',
+          label: 'FBA',
           backgroundColor: '#7F0A1B',
           data: [],
         },
         {
-          label: 'Fulfilled By Trevco',
+          label: 'FBM',
           backgroundColor: '#CC102C',
           data: []
         }
