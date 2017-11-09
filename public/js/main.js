@@ -48062,12 +48062,13 @@ var round2Fixed = function round2Fixed(value) {
         var dayOrdersSales = dayOrders.map(function (order) {
           var order_items_total = order.order_item.map(function (item) {
             return [].concat(item.itemPrice.component).reduce(function (x, y) {
+
               return parseFloat(x) + parseFloat(y.amount);
-            }, 0);
+            }, 0.00);
           });
           return order_items_total.reduce(arraySum, 0);
         });
-        return dayOrdersSales.reduce(arraySum, 0);
+        return round2Fixed(dayOrdersSales.reduce(arraySum, 0));
       });
 
       this.dailyFBMSalesArray = __WEBPACK_IMPORTED_MODULE_1_moment_array_dates___default.a.lastNDays(30, '', true).map(function (day) {
@@ -48078,11 +48079,11 @@ var round2Fixed = function round2Fixed(value) {
           var order_items_total = order.order_item.map(function (item) {
             return [].concat(item.itemPrice.component).reduce(function (x, y) {
               return parseFloat(x) + parseFloat(y.amount);
-            }, 0);
+            }, 0.00);
           });
           return order_items_total.reduce(arraySum, 0);
         });
-        return dayOrdersSales.reduce(arraySum, 0);
+        return round2Fixed(dayOrdersSales.reduce(arraySum, 0));
       });
       this.rerenderChart();
     }

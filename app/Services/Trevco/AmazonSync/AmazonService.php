@@ -9,6 +9,7 @@ use AmazonReportRequest;
 use AmazonReportRequestList;
 use App\Exceptions\Amazon\AmazonReportException;
 use App\Order;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputInterface;
@@ -198,7 +199,7 @@ abstract class AmazonService extends Command
                     $amazonReportRequest = $reportRequest;
                     break;
                 } else {
-                    $this->output->writeln(sprintf('Found report with another request id %s', $reportRequest['ReportRequestId']));
+                    $this->output->writeln(sprintf('Found report with another request id %s requested %s with status %s', $reportRequest['ReportRequestId'], Carbon::parse($reportRequest['SubmittedDate'])->diffForHumans(), $reportRequest['ReportProcessingStatus']));
                 }
             }
         }

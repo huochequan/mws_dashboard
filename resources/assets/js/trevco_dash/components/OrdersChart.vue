@@ -42,12 +42,13 @@ export default Bar.extend({
         var dayOrdersSales = dayOrders.map((order) => {
         var order_items_total = order.order_item.map((item) => {
           return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
+
+            return parseFloat(x) + parseFloat(y.amount);
+          }, 0.00);
         });
         return order_items_total.reduce(arraySum, 0);
       });
-        return dayOrdersSales.reduce(arraySum, 0)
+        return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
       })
 
       this.dailyFBMSalesArray = dateArray.lastNDays(30, '', true).map(function(day) {
@@ -57,12 +58,12 @@ export default Bar.extend({
         var dayOrdersSales = dayOrders.map((order) => {
         var order_items_total = order.order_item.map((item) => {
           return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
+            return parseFloat(x) + parseFloat(y.amount);
+          }, 0.00);
         });
         return order_items_total.reduce(arraySum, 0);
       });
-        return dayOrdersSales.reduce(arraySum, 0)
+        return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
       })
       this.rerenderChart();
     }
