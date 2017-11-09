@@ -48470,6 +48470,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var arraySum = function arraySum(x, y) {
   return x + y;
 };
+
+var kFormatter = function kFormatter(num) {
+  return num > 999 ? (num / 1000).toFixed(1) + 'k' : num;
+};
 var round2Fixed = function round2Fixed(value) {
   value = +value;
 
@@ -48481,7 +48485,7 @@ var round2Fixed = function round2Fixed(value) {
 
   // Shift back
   value = value.toString().split('e');
-  return (+(value[0] + 'e' + (value[1] ? +value[1] - 2 : -2))).toFixed(2);
+  return kFormatter((+(value[0] + 'e' + (value[1] ? +value[1] - 2 : -2))).toFixed(2));
 };
 
 var last30Days = function last30Days(order) {
@@ -48560,10 +48564,10 @@ var sameDay = function sameDay(order) {
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     orderCountLast30Days: function orderCountLast30Days() {
-      return this.orders.filter(last30Days).length;
+      return kFormatter(this.orders.filter(last30Days).length);
     },
     ordersToday: function ordersToday() {
-      return this.orders.filter(sameDay).length;
+      return kFormatter(this.orders.filter(sameDay).length);
     }
   }
 });

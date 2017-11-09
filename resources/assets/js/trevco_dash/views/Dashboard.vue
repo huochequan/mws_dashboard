@@ -65,6 +65,8 @@ import * as moment from 'moment';
 var arraySum = (x, y) =>{
   return x+y;
 }
+
+var kFormatter = num => num > 999 ? (num/1000).toFixed(1) + 'k' : num;
 var round2Fixed = (value) => {
   value = +value;
 
@@ -77,7 +79,7 @@ var round2Fixed = (value) => {
 
   // Shift back
   value = value.toString().split('e');
-  return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
+  return kFormatter((+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2));
 }
 
 var last30Days = (order) => { return moment(order.purchaseDate).isBetween(moment().startOf('day').subtract(30, 'day'), moment().endOf('day'))};
@@ -151,10 +153,10 @@ export default {
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     orderCountLast30Days() {
-      return this.orders.filter(last30Days).length;
+      return kFormatter(this.orders.filter(last30Days).length);
     },
     ordersToday() {
-      return this.orders.filter(sameDay).length;
+      return kFormatter(this.orders.filter(sameDay).length);
     }
   }
 }
