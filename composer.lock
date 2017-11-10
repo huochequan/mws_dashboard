@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "de7ad9f3d581dc65c6148e3dff8c2686",
-    "content-hash": "d7a727fd2f1cb913ba2acc689490c0f6",
+    "hash": "e98d85e1ca0b2da103ee129d8c813840",
+    "content-hash": "6236bf609698265afc970dfe6b466942",
     "packages": [
         {
             "name": "actsmart/actsmart",
@@ -2563,6 +2563,48 @@
                 "validation"
             ],
             "time": "2017-08-28 23:28:32"
+        },
+        {
+            "name": "prewk/xml-string-streamer",
+            "version": "0.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/prewk/xml-string-streamer.git",
+                "reference": "5c167c835b07d44d4d9412febe031a09a69dafbd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/prewk/xml-string-streamer/zipball/5c167c835b07d44d4d9412febe031a09a69dafbd",
+                "reference": "5c167c835b07d44d4d9412febe031a09a69dafbd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.8.0",
+                "phpunit/phpunit": "^4.8 || ^5.7.21",
+                "prewk/xml-faker": "^0.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Prewk\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "prewk",
+                    "email": "oskar.thornblad@gmail.com"
+                }
+            ],
+            "description": "Stream large XML files with low memory consumption",
+            "homepage": "https://github.com/prewk/xml-string-streamer",
+            "time": "2017-10-03 21:15:29"
         },
         {
             "name": "psr/cache",
