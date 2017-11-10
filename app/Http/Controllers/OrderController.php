@@ -31,7 +31,8 @@ class OrderController extends AppBaseController
      */
     public function index(Request $request)
     {
-        ini_set('max_excution_time', 0);
+        // ini_set('max_excution_time', 0);
+        // ini_set('memory_limit','32M');
         $this->orderRepository->pushCriteria(new RequestCriteria($request));
         $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
         $orders = $this->orderRepository->all();
