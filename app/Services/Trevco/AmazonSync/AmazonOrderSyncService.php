@@ -5,7 +5,8 @@ use App\Services\Trevco\AmazonSync\AmazonReportModelSync;
 
 class AmazonOrderSyncService extends AmazonService
 {
-    const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_LAST_UPDATE_';
+    // const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_LAST_UPDATE_';
+    const REPORT_TYPE = '_GET_XML_ALL_ORDERS_DATA_BY_ORDER_DATE_';
 
     public function __construct(AmazonReportModelSync $persistenceService)
     {

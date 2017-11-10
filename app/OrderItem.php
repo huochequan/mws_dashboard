@@ -31,7 +31,7 @@ class OrderItem extends Model
 
 
     protected $dates = ['deleted_at'];
-    protected $hidden = ['id','order_id','deleted_at', 'created_at', 'updated_at'];
+    protected $hidden = ['id','order_id','deleted_at', 'created_at', 'updated_at', 'aSIN', 'sKU', 'productName'];
 
 
     public $fillable = [
@@ -75,5 +75,20 @@ class OrderItem extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function getTotalAttribute()
+    {
+        if (empty($this->itemPrice)){
+            return 0;
+        }
+        if (empty($this->itemPrice['component'][0])) {
+            return (float) $this->itemPrice['component']['amount'];
+        }
+        return array_reduce(array_pluck($this->itemPrice['component'], 'amount'),function ($carry, $item)
+        {
+            $item  = (float) $item;
+            return $carry + $item;
+        }, 0);
     }
 }

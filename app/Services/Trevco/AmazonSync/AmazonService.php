@@ -9,6 +9,7 @@ use AmazonReportRequest;
 use AmazonReportRequestList;
 use App\Exceptions\Amazon\AmazonReportException;
 use App\Order;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AmazonService extends Command
 {
-    const WAIT_TIME = 120;
+    const WAIT_TIME = 240;
 
     const MAX_REPORT_REQUEST_ATTEMPTS = 5;
 
@@ -69,6 +70,7 @@ abstract class AmazonService extends Command
             //$reportRequestId = 120998017240;
             $this->output->writeln(sprintf('Get report request ID %s for %s report type', $reportRequestId, $this->reportType));
         } catch (\Exception $ex) {
+            dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
@@ -86,6 +88,7 @@ abstract class AmazonService extends Command
                 $amazonReportData = $this->fetchReportRequestList($reportRequestId);
                 dump($amazonReportData);
             } catch (\Exception $ex) {
+                dump($ex);
                 $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
                 return false;
             }
@@ -122,6 +125,7 @@ abstract class AmazonService extends Command
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
             $this->persistenceService->saveModels(Order::class, $amazonReport);
         } catch (\Exception $ex) {
+            dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
@@ -147,6 +151,7 @@ abstract class AmazonService extends Command
     public function sendReportRequest()
     {
         $amazonReportRequest = new AmazonReportRequest('default', false, null, $this->configFile);
+        $amazonReportRequest->setTimeLimits(Carbon::now()->subDays(15)->startOfDay()->toDateTimeString(),Carbon::now()->endOfDay()->toDateTimeString());
         $amazonReportRequest->setReportType($this->reportType);
         $amazonReportRequest->requestReport();
         return $amazonReportRequest->getReportRequestId();
@@ -194,11 +199,11 @@ abstract class AmazonService extends Command
         foreach($amazonReportRequestList->getList() as $reportRequest) {
             // Find this report within amazon report request list 
             if ($reportRequest['ReportType'] == $this->reportType) {
-                if ($reportRequest['ReportRequestId'] == $reportRequestId && $reportRequest['ReportProcessingStatus'] !== "_CANCELLED_") {
+                if ($reportRequest['ReportRequestId'] == $reportRequestId && $reportRequest['ReportProcessingStatus'] == "_DONE_") {
                     $amazonReportRequest = $reportRequest;
                     break;
                 } else {
-                    $this->output->writeln(sprintf('Found report with another request id %s', $reportRequest['ReportRequestId']));
+                    $this->output->writeln(sprintf('Found report with another request id %s requested %s with status %s', $reportRequest['ReportRequestId'], Carbon::parse($reportRequest['SubmittedDate'])->diffForHumans(), $reportRequest['ReportProcessingStatus']));
                 }
             }
         }
@@ -213,15 +218,17 @@ abstract class AmazonService extends Command
 
     public function fetchLastValidReportRequest($reportRequestList)
     {
-       $latestValidRequestArray =  array_filter($reportRequestList, function ($reportRequest)
+       $validRequestArray =  array_filter($reportRequestList, function ($reportRequest)
         {
             return $reportRequest['ReportType'] == $this->reportType && $reportRequest['ReportProcessingStatus'] == "_DONE_";
         });
 
-       if (count($latestValidRequestArray)) {
-            $latestValidRequest = reset($latestValidRequestArray);
+       if (count($validRequestArray)) {
+            $latestValidRequest = array_reduce($validRequestArray, function ($acc, $request)
+            {
+                return Carbon::parse($acc['SubmittedDate'])->gt(Carbon::parse($request['SubmittedDate'])) ? $acc : $request;
+            }, reset($validRequestArray));
             $this->output->writeln(sprintf('Found a VALID report with another request id %s', $latestValidRequest["ReportRequestId"]));
-
        }
        return empty($latestValidRequest) ? null: $latestValidRequest;
     }

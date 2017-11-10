@@ -88,4 +88,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function getTotalAttribute()
+    {
+       return $this->orderItem->map(function($item, $key) {
+            return $item->total;
+        })->reduce(function ($carry, $item)
+        {
+            return $carry + $item;
+        }, 0);       
+    }
 }

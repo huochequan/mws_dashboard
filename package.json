@@ -7,7 +7,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "axios": "^0.15.2",
+    "axios": "^0.17.0",
     "bootstrap": "^3.0.0",
     "bootstrap-vue": "alpha",
     "chart.js": "^2.6.0",
@@ -17,6 +17,7 @@
     "js-cookie": "^2.1.0",
     "laravel-mix": "0.*",
     "moment": "^2.10.6",
+    "moment-array-dates": "^2.0.3",
     "promise": "^7.1.1",
     "simple-line-icons": "^2.4.1",
     "sweetalert": "^1.1.3",
