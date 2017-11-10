@@ -42,15 +42,7 @@ export default Bar.extend({
         var dayOrders = newOrders.filter((order) => {
               return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Amazon");
             })
-        var dayOrdersSales = dayOrders.map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0.00);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+        var dayOrdersSales = dayOrders.map( order => order.total);
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
       })
 
@@ -58,14 +50,7 @@ export default Bar.extend({
         var dayOrders = newOrders.filter((order) => {
               return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Merchant");
             })
-        var dayOrdersSales = dayOrders.map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0.00);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+        var dayOrdersSales = dayOrders.map(order => order.total);
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
       })
       this.rerenderChart();

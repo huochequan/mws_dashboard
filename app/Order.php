@@ -96,7 +96,6 @@ class Order extends Model
         })->reduce(function ($carry, $item)
         {
             return $carry + $item;
-        }, 0);
-       
+        }, 0);       
     }
 }

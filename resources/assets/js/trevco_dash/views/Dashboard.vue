@@ -132,47 +132,19 @@ export default {
   },
   computed: {
     salesTotal() {
-      var sT = this.orders.map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+      var sT = this.orders.map(order => order.total);
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesToday() {
-      var sT = this.orders.filter(sameDay).map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+      var sT = this.orders.filter(sameDay).map( order => order.total );
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesYesterday() {
-      var sT = this.orders.filter(yesterday).map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+      var sT = this.orders.filter(yesterday).map(order => order.total);
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesLast30Days() {
-      var sT = this.orders.filter(last30Days).map((order) => {
-        var order_items_total = order.order_item.map((item) => {
-          return [].concat(item.itemPrice.component).reduce((x,y)=>{
-            return parseFloat(x)+parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
-      });
+      var sT = this.orders.filter(last30Days).map(order => order.total);
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     orderCountLast30Days() {
@@ -182,10 +154,10 @@ export default {
       return kFormatter(this.orders.filter(sameDay).length) || "--";
     },
     percentageDiffSalesYesterday() {
-      return parseInt(Math.abs((this.salesToday - this.salesYesterday) / this.salesYesterday * 100)) || "--";
+      return parseInt(Math.abs((this.orders.filter(sameDay).map( order => order.total ).reduce(arraySum, 0) - this.orders.filter(yesterday).map( order => order.total ).reduce(arraySum, 0)) / this.orders.filter(yesterday).map( order => order.total ).reduce(arraySum, 0) * 100)) || "--";
     },
     percentageDiffSalesYesterdaySign() {
-      return parseFloat(this.salesToday) > parseFloat(this.salesYesterday) ? "+" : parseFloat(this.salesToday) == parseFloat(this.salesYesterday) ? "" : "-";
+      return parseFloat(this.orders.filter(sameDay).map( order => order.total ).reduce(arraySum, 0)) > parseFloat(this.orders.filter(yesterday).map( order => order.total ).reduce(arraySum, 0)) ? "+" : parseFloat(this.orders.filter(sameDay).map( order => order.total ).reduce(arraySum, 0)) == parseFloat(this.orders.filter(yesterday).map( order => order.total ).reduce(arraySum, 0)) ? "" : "-";
     },
     unshippedCount() {
       return this.orders.filter(unshippedByMerchant).length || "--";

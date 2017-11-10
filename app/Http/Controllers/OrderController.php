@@ -31,11 +31,20 @@ class OrderController extends AppBaseController
      */
     public function index(Request $request)
     {
+        ini_set('max_excution_time', 0);
         $this->orderRepository->pushCriteria(new RequestCriteria($request));
         $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
-        $orders = $this->orderRepository->all(['purchaseDate', 'orderStatus', 'fulfillmentData']);
+        $orders = $this->orderRepository->all();
 
-        return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
+        $ordersIDTotalMap = $orders->mapWithKeys(function ($order) {
+            return [$order->id => $order->total];
+        })->all();
+        $ordersPayload = $orders->toArray();
+        foreach ($ordersPayload as $key => $order) {
+            $order['total'] = $ordersIDTotalMap[$order['id']];
+            $ordersPayload[$key] = $order;
+        }
+        return $this->sendResponse($ordersPayload, 'Orders retrieved successfully');
     }
 
     /**

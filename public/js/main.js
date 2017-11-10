@@ -48065,13 +48065,7 @@ __WEBPACK_IMPORTED_MODULE_2_chart_js___default.a.defaults.global.defaultFontFami
           return __WEBPACK_IMPORTED_MODULE_3_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Amazon";
         });
         var dayOrdersSales = dayOrders.map(function (order) {
-          var order_items_total = order.order_item.map(function (item) {
-            return [].concat(item.itemPrice.component).reduce(function (x, y) {
-
-              return parseFloat(x) + parseFloat(y.amount);
-            }, 0.00);
-          });
-          return order_items_total.reduce(arraySum, 0);
+          return order.total;
         });
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0));
       });
@@ -48081,12 +48075,7 @@ __WEBPACK_IMPORTED_MODULE_2_chart_js___default.a.defaults.global.defaultFontFami
           return __WEBPACK_IMPORTED_MODULE_3_moment__(day).isSame(order.purchaseDate, 'day') && order.fulfillmentData.fulfillmentChannel == "Merchant";
         });
         var dayOrdersSales = dayOrders.map(function (order) {
-          var order_items_total = order.order_item.map(function (item) {
-            return [].concat(item.itemPrice.component).reduce(function (x, y) {
-              return parseFloat(x) + parseFloat(y.amount);
-            }, 0.00);
-          });
-          return order_items_total.reduce(arraySum, 0);
+          return order.total;
         });
         return round2Fixed(dayOrdersSales.reduce(arraySum, 0));
       });
@@ -48563,45 +48552,25 @@ var unshippedByMerchant = function unshippedByMerchant(order) {
   computed: {
     salesTotal: function salesTotal() {
       var sT = this.orders.map(function (order) {
-        var order_items_total = order.order_item.map(function (item) {
-          return [].concat(item.itemPrice.component).reduce(function (x, y) {
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
+        return order.total;
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesToday: function salesToday() {
       var sT = this.orders.filter(sameDay).map(function (order) {
-        var order_items_total = order.order_item.map(function (item) {
-          return [].concat(item.itemPrice.component).reduce(function (x, y) {
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
+        return order.total;
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesYesterday: function salesYesterday() {
       var sT = this.orders.filter(yesterday).map(function (order) {
-        var order_items_total = order.order_item.map(function (item) {
-          return [].concat(item.itemPrice.component).reduce(function (x, y) {
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
+        return order.total;
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
     salesLast30Days: function salesLast30Days() {
       var sT = this.orders.filter(last30Days).map(function (order) {
-        var order_items_total = order.order_item.map(function (item) {
-          return [].concat(item.itemPrice.component).reduce(function (x, y) {
-            return parseFloat(x) + parseFloat(y.amount);
-          }, 0);
-        });
-        return order_items_total.reduce(arraySum, 0);
+        return order.total;
       });
       return round2Fixed(sT.reduce(arraySum, 0));
     },
@@ -48612,10 +48581,24 @@ var unshippedByMerchant = function unshippedByMerchant(order) {
       return kFormatter(this.orders.filter(sameDay).length) || "--";
     },
     percentageDiffSalesYesterday: function percentageDiffSalesYesterday() {
-      return parseInt(Math.abs((this.salesToday - this.salesYesterday) / this.salesYesterday * 100)) || "--";
+      return parseInt(Math.abs((this.orders.filter(sameDay).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0) - this.orders.filter(yesterday).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0)) / this.orders.filter(yesterday).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0) * 100)) || "--";
     },
     percentageDiffSalesYesterdaySign: function percentageDiffSalesYesterdaySign() {
-      return parseFloat(this.salesToday) > parseFloat(this.salesYesterday) ? "+" : parseFloat(this.salesToday) == parseFloat(this.salesYesterday) ? "" : "-";
+      return parseFloat(this.orders.filter(sameDay).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0)) > parseFloat(this.orders.filter(yesterday).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0)) ? "+" : parseFloat(this.orders.filter(sameDay).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0)) == parseFloat(this.orders.filter(yesterday).map(function (order) {
+        return order.total;
+      }).reduce(arraySum, 0)) ? "" : "-";
     },
     unshippedCount: function unshippedCount() {
       return this.orders.filter(unshippedByMerchant).length || "--";
