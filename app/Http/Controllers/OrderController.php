@@ -33,7 +33,7 @@ class OrderController extends AppBaseController
     {
         $this->orderRepository->pushCriteria(new RequestCriteria($request));
         $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
-        $orders = $this->orderRepository->all();
+        $orders = $this->orderRepository->all(['purchaseDate', 'orderStatus', 'fulfillmentData']);
 
         return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
     }

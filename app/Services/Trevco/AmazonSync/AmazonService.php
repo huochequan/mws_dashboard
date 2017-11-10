@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AmazonService extends Command
 {
-    const WAIT_TIME = 120;
+    const WAIT_TIME = 240;
 
     const MAX_REPORT_REQUEST_ATTEMPTS = 5;
 
@@ -70,6 +70,7 @@ abstract class AmazonService extends Command
             //$reportRequestId = 120998017240;
             $this->output->writeln(sprintf('Get report request ID %s for %s report type', $reportRequestId, $this->reportType));
         } catch (\Exception $ex) {
+            dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
@@ -87,6 +88,7 @@ abstract class AmazonService extends Command
                 $amazonReportData = $this->fetchReportRequestList($reportRequestId);
                 dump($amazonReportData);
             } catch (\Exception $ex) {
+                dump($ex);
                 $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
                 return false;
             }
@@ -123,6 +125,7 @@ abstract class AmazonService extends Command
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
             $this->persistenceService->saveModels(Order::class, $amazonReport);
         } catch (\Exception $ex) {
+            dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
@@ -148,6 +151,7 @@ abstract class AmazonService extends Command
     public function sendReportRequest()
     {
         $amazonReportRequest = new AmazonReportRequest('default', false, null, $this->configFile);
+        $amazonReportRequest->setTimeLimits(Carbon::now()->subDays(15)->startOfDay()->toDateTimeString(),Carbon::now()->endOfDay()->toDateTimeString());
         $amazonReportRequest->setReportType($this->reportType);
         $amazonReportRequest->requestReport();
         return $amazonReportRequest->getReportRequestId();
@@ -195,7 +199,7 @@ abstract class AmazonService extends Command
         foreach($amazonReportRequestList->getList() as $reportRequest) {
             // Find this report within amazon report request list 
             if ($reportRequest['ReportType'] == $this->reportType) {
-                if ($reportRequest['ReportRequestId'] == $reportRequestId && $reportRequest['ReportProcessingStatus'] !== "_CANCELLED_") {
+                if ($reportRequest['ReportRequestId'] == $reportRequestId && $reportRequest['ReportProcessingStatus'] == "_DONE_") {
                     $amazonReportRequest = $reportRequest;
                     break;
                 } else {

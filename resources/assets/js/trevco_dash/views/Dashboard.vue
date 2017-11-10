@@ -52,7 +52,12 @@
         </b-card>
       </div><!--/.col-->
     </div><!--/.row-->
-    <b-card header="Sales ($)" class="borderless order-card">
+    <img class="amazon-logo"
+    src="/img/amazon-logo.svg" 
+    alt="triangle with all three sides equal"
+    height="30px"
+    />
+    <b-card header="Sales($)" class="borderless order-card">
         <orders-chart :width="1100" :orders="orders"/>
     </b-card>
   </div>
@@ -180,7 +185,7 @@ export default {
       return parseInt(Math.abs((this.salesToday - this.salesYesterday) / this.salesYesterday * 100)) || "--";
     },
     percentageDiffSalesYesterdaySign() {
-      return this.salesToday > this.salesYesterday ? "+" : this.salesToday == this.salesYesterday ? "" : "-";
+      return parseFloat(this.salesToday) > parseFloat(this.salesYesterday) ? "+" : parseFloat(this.salesToday) == parseFloat(this.salesYesterday) ? "" : "-";
     },
     unshippedCount() {
       return this.orders.filter(unshippedByMerchant).length || "--";
