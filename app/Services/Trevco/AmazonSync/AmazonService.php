@@ -123,23 +123,13 @@ abstract class AmazonService extends Command
             $amazonReport = $this->fetchReport($amazonReportData);
             $this->output->writeln(sprintf('Report request with ID %s was loaded', $reportRequestId));
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
-            $this->persistenceService->saveModels(Order::class, $amazonReport);
+            // $this->persistenceService->saveModels(Order::class, $amazonReport);
+            $this->persistenceService->saveModelsFromFile(Order::class, storage_path('app/amazon-mws/reports/' . $this->getInventoryFilename()));
         } catch (\Exception $ex) {
             dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
             return false;
         }
-
-        // $products = $this->getProductsFromReport($amazonReport);
-        // if (count($products)) {
-        //     $this->output->writeln(sprintf('Found %s products total in report', count($products)));
-        //     $feed  = $this->buildInventoryList($products);
-        //     $this->persistenceService->saveModels(Order::class, $amazonReport);
-        //     $this->output->writeln('Inventory report built');
-        // } else {
-        //     $this->output->writeln('No products for report were found');
-        // }
-
         return true;
     }
 
