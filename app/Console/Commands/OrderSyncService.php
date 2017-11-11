@@ -14,7 +14,8 @@ class OrderSyncService extends Command
      *
      * @var string
      */
-    protected $signature = 'trevco:sync-orders';
+    protected $signature = 'trevco:sync-orders {days_past=1 : Range in number of days since present day}';
+    // protected $signature = 'trevco:sync-orders {days_past}';
 
     /**
      * The console command description.
@@ -41,8 +42,9 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
+        $daysPast = $this->argument('days_past');
         $persistenceService = new AmazonReportModelSync($this->reportTransformer);
-        $service = new AmazonOrderSyncService($persistenceService);
+        $service = new AmazonOrderSyncService($persistenceService, $daysPast);
         $service->execute($this->input, $this->output);
     }
 }
