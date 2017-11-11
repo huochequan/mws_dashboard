@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\API\CreateOrderAPIRequest;
 use App\Http\Requests\API\UpdateOrderAPIRequest;
 use App\Order;
 use App\Repositories\OrderRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\AppBaseController;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
@@ -31,20 +32,33 @@ class OrderController extends AppBaseController
      */
     public function index(Request $request)
     {
-        ini_set('max_excution_time', 0);
-        $this->orderRepository->pushCriteria(new RequestCriteria($request));
-        $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
-        $orders = $this->orderRepository->all();
+        $saleDaysRange = date_range(Carbon::now()->subDays(29)->startOfDay(), Carbon::now()->endOfDay());
+        $salesLast30Days = 0;
+        $salesToday = 0;
+        $salesYesterday = 0;
+        $today = Carbon::now()->toDateString();
+        $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday)
+        {
+            $dayFBASales = 0;
+            $dayFBMSales = 0;
+            foreach (Order::where('purchaseDate', $day->toDateString())->cursor() as $order) {
+                $dayFBASales += ($order->fulfillmentData['fulfillmentChannel'] == "Amazon") ? $order->total :  0;
+                $dayFBMSales += ($order->fulfillmentData['fulfillmentChannel'] == "Merchant") ? $order->total: 0;
+            }
+            $salesLast30Days += $dayFBMSales + $dayFBASales;
 
-        $ordersIDTotalMap = $orders->mapWithKeys(function ($order) {
-            return [$order->id => $order->total];
-        })->all();
-        $ordersPayload = $orders->toArray();
-        foreach ($ordersPayload as $key => $order) {
-            $order['total'] = $ordersIDTotalMap[$order['id']];
-            $ordersPayload[$key] = $order;
-        }
-        return $this->sendResponse($ordersPayload, 'Orders retrieved successfully');
+            if (Carbon::now()->toDateString() == $day->toDateString()) {
+                $salesToday += $dayFBMSales + $dayFBASales;
+            }
+            $salesToday += (Carbon::now()->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
+            $salesYesterday += (Carbon::yesterday()->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
+            return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
+        },$saleDaysRange);
+        $ordersToday = Order::where('purchaseDate', Carbon::today()->toDateString())->count();
+        $unshippedCount = Order::where('orderStatus','!=',"Shipped")->count();
+        $salesPrevious30Days = Order::whereBetween('purchaseDate', [Carbon::now()->subDays(60)->toDateString(), Carbon::now()->subDays(30)->toDateString()])->get()->sum('total');
+        return $this->sendResponse(compact('saleDaysData', 'salesLast30Days','salesPrevious30Days', 'salesToday', 'salesYesterday', 'ordersToday', 'unshippedCount'), 'Orders retrieved successfully');
+
     }
 
     /**

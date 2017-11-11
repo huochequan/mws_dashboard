@@ -86,7 +86,7 @@ abstract class AmazonService extends Command
 
             try {
                 $amazonReportData = $this->fetchReportRequestList($reportRequestId);
-                dump($amazonReportData);
+                // dump($amazonReportData);
             } catch (\Exception $ex) {
                 dump($ex);
                 $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
