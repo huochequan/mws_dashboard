@@ -37,13 +37,15 @@ class OrderController extends AppBaseController
         $salesToday = 0;
         $salesYesterday = 0;
         $today = Carbon::now()->toDateString();
-        $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday)
+        $unshippedCount = 0;
+        $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday, &$unshippedCount)
         {
             $dayFBASales = 0;
             $dayFBMSales = 0;
             foreach (Order::where('purchaseDate', $day->toDateString())->cursor() as $order) {
                 $dayFBASales += ($order->fulfillmentData['fulfillmentChannel'] == "Amazon") ? $order->total :  0;
                 $dayFBMSales += ($order->fulfillmentData['fulfillmentChannel'] == "Merchant") ? $order->total: 0;
+                $unshippedCount += (($order->fulfillmentData['fulfillmentChannel'] == "Merchant") && ($order->orderStatus != "Shipped")) ? 1 : 0;
             }
             $salesLast30Days += $dayFBMSales + $dayFBASales;
 
@@ -55,7 +57,6 @@ class OrderController extends AppBaseController
             return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
         },$saleDaysRange);
         $ordersToday = Order::where('purchaseDate', Carbon::today()->toDateString())->count();
-        $unshippedCount = Order::where('orderStatus','!=',"Shipped")->count();
         $salesPrevious30Days = Order::whereBetween('purchaseDate', [Carbon::now()->subDays(60)->toDateString(), Carbon::now()->subDays(30)->toDateString()])->get()->sum('total');
         return $this->sendResponse(compact('saleDaysData', 'salesLast30Days','salesPrevious30Days', 'salesToday', 'salesYesterday', 'ordersToday', 'unshippedCount'), 'Orders retrieved successfully');
 
