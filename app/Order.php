@@ -70,7 +70,7 @@ class Order extends Model
 
     public function setPurchaseDateAttribute($value)
     {
-        return $this->attributes['purchaseDate'] = \Carbon\Carbon::parse($value);
+        return $this->attributes['purchaseDate'] = \Carbon\Carbon::parse($value)->tz('America/Los_Angeles');
     }
 
     public function setLastUpdatedDateAttribute($value)
