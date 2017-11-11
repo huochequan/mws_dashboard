@@ -22,7 +22,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-darken" :no-block="true">
           <div class="card-body pb-0">
-            <h1 class="order-data-value text-center mb-0">+ 70%</h1>
+            <h1 class="order-data-value text-center mb-0">{{ percentageDiffSalesPrevious30DaysSign }} {{ percentageDiffSalesPrevious30Days }}</h1>
             <p class="h5 order-data-caption text-center font-weight-bold">Previous 30 days</p>
           </div>
         </b-card>
@@ -58,13 +58,13 @@
     height="30px"
     />
     <b-card header="Sales($)" class="borderless order-card">
-        <!-- <orders-chart :width="1100" :orders="orders"/> -->
+        <orders-chart :width="1100" :salesData="salesData"/>
     </b-card>
   </div>
 </template>
 
 <script>
-// import OrdersChart from '../components/OrdersChart';
+import OrdersChart from '../components/OrdersChart';
 import axios from 'axios';
 import * as moment from 'moment';
 var arraySum = (x, y) =>{
@@ -95,16 +95,17 @@ var round2Fixed = (value) => {
 export default {
   name: 'dashboard',
   components: {
-    // OrdersChart
+    OrdersChart
   },
   data: function () {
     return {
       salesToday: 0,
       salesYesterday: 0,
       salesLast30Days: 0,
+      salesPrevious30Days: 0,
       ordersToday: 0,
       unshippedCount: 0,
-      saleDaysData: []
+      salesData: []
     }
   },
   methods: {
@@ -133,23 +134,41 @@ export default {
         this.salesToday = response.data.data.salesToday,
         this.salesYesterday = response.data.data.salesYesterday,
         this.salesLast30Days = response.data.data.salesLast30Days,
+        this.salesPrevious30Days = response.data.data.salesPrevious30Days,
         this.ordersToday = response.data.data.ordersToday,
         this.unshippedCount = response.data.data.unshippedCount,
-        this.saleDaysData = response.data.data.saleDaysData
+        this.salesData = response.data.data.saleDaysData
       });
   },
   computed: {
      percentageDiffSalesYesterday() {
-      if (this.salesToday == 0) {
+      if (this.salesYesterday == 0) {
         return "--";
       }
-      return parseInt(Math.abs(this.salesToday - this.salesYesterday) / this.salesYesterday) + "%" || "--";
+
+      // if (this.salesToday == 0) {
+      //   return "--";
+      // }
+      return parseInt(Math.abs(this.salesToday - this.salesYesterday) / this.salesYesterday * 100) + "%" || "--";
     },
     percentageDiffSalesYesterdaySign() {
-      if (this.salesToday == 0) {
+      if (this.salesYesterday == 0) {
         return "";
       }
-      return parseFloat(this.salesYesterday) > parseFloat(this.salesYesterday) ? "+" : parseFloat(this.salesToday) == parseFloat(this.salesYesterday) ? "" : "-";
+      return parseFloat(this.salesToday) > parseFloat(this.salesYesterday) ? "+" : parseFloat(this.salesToday) == parseFloat(this.salesYesterday) ? "" : "-";
+    },
+
+     percentageDiffSalesPrevious30Days() {
+      if (this.salesPrevious30Days == 0 ) {
+        return "--";
+      }
+      return parseInt(Math.abs(this.salesLast30Days - this.salesPrevious30Days) / this.salesPrevious30Days * 100) + "%" || "--";
+    },
+    percentageDiffSalesPrevious30DaysSign() {
+      if (this.salesPrevious30Days == 0) {
+        return "";
+      }
+      return parseFloat(this.salesLast30Days) > parseFloat(this.salesPrevious30Days) ? "+" : parseFloat(this.salesLast30Days) == parseFloat(this.salesPrevious30Days) ? "" : "-";
     },
  }
 }

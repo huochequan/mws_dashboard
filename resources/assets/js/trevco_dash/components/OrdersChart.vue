@@ -25,7 +25,7 @@ var round2Fixed = (value) => {
 Chart.defaults.global.defaultFontFamily = '"Signika",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 export default Bar.extend({
   props: {
-    'orders': {
+    'salesData': {
       type: Array,
       default: []
     }
@@ -37,29 +37,21 @@ export default Bar.extend({
     }
   },
   watch: {
-    orders: function(newOrders) {
-      this.dailyFBASalesArray = dateArray.range(moment().subtract(30,'days'),moment(), '', true).map(function(day) {
-        var dayOrders = newOrders.filter((order) => {
-              return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Amazon");
-            })
-        var dayOrdersSales = dayOrders.map( order => order.total);
-        return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
+    salesData: function(newOrders) {
+      this.dailyFBASalesArray = newOrders.map(function(elem) {
+        return elem.dayFBASales;
+      })
+      this.dailyFBMSalesArray = newOrders.map(function(elem) {
+        return elem.dayFBMSales;
       })
 
-      this.dailyFBMSalesArray = dateArray.range(moment().subtract(30,'days'),moment(), '', true).map(function(day) {
-        var dayOrders = newOrders.filter((order) => {
-              return moment(day).isSame(order.purchaseDate, 'day') && (order.fulfillmentData.fulfillmentChannel == "Merchant");
-            })
-        var dayOrdersSales = dayOrders.map(order => order.total);
-        return round2Fixed(dayOrdersSales.reduce(arraySum, 0))
-      })
       this.rerenderChart();
     }
   },
   methods: {
     rerenderChart () {
     this.renderChart({
-      labels: dateArray.range(moment().subtract(30,'days'),moment(), 'MMM DD', true),
+      labels: this.salesData.map(x => x.purchaseDate),
       datasets: [
         {
           label: 'FBA',
