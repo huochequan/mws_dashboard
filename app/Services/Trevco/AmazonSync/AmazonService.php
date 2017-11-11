@@ -48,11 +48,17 @@ abstract class AmazonService extends Command
      */
     protected $reportType;
 
-    public function __construct($reportType, $persistenceService)
+    /**
+     * @var string
+     */
+    protected $daysPast;
+
+    public function __construct($reportType, $persistenceService, $daysPast)
     {
         $this->configFile = config_path('amazon.php');
         $this->persistenceService = $persistenceService;
         $this->reportType = $reportType;
+        $this->daysPast = $daysPast;
     }
 
     public function setOutput(OutputInterface $output)
@@ -141,7 +147,7 @@ abstract class AmazonService extends Command
     public function sendReportRequest()
     {
         $amazonReportRequest = new AmazonReportRequest('default', false, null, $this->configFile);
-        $amazonReportRequest->setTimeLimits(Carbon::now()->subDays(15)->startOfDay()->toDateTimeString(),Carbon::now()->endOfDay()->toDateTimeString());
+        $amazonReportRequest->setTimeLimits(Carbon::now()->subDays($this->daysPast)->startOfDay()->toDateTimeString(),Carbon::now()->endOfDay()->toDateTimeString());
         $amazonReportRequest->setReportType($this->reportType);
         $amazonReportRequest->requestReport();
         return $amazonReportRequest->getReportRequestId();
