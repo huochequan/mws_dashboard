@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->string('amazonOrderID')->unique();
             $table->string('merchantOrderID')->unique()->nullable();
-            $table->dateTime('purchaseDate');
+            $table->date('purchaseDate');
             $table->dateTime('lastUpdatedDate');
             $table->string('orderStatus');
             $table->string('salesChannel');
