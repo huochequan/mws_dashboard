@@ -4,10 +4,11 @@ namespace App\Services\Trevco\AmazonSync;
 use App\Repositories\OrderRepository;
 use App\Services\Trevco\AmazonReportTransformer;
 use Exception;
-use ReflectionClass;
+use Illuminate\Support\Facades\Storage;
 use Prewk\XmlStringStreamer;
-use Prewk\XmlStringStreamer\Stream;
 use Prewk\XmlStringStreamer\Parser;
+use Prewk\XmlStringStreamer\Stream;
+use ReflectionClass;
 
 class AmazonReportModelSync
 {
@@ -63,8 +64,8 @@ class AmazonReportModelSync
 	        else {
 	        	$createdOrder->orderItem()->createMany($orderItems);
 	        }
-
-		}		
+		}
+        unlink($reportDataFile);		
 		return true;
 	}
 }
