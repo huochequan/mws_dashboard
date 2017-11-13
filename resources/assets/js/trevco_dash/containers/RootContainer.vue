@@ -14,20 +14,14 @@
 </template>
 
 <script>
-import nav from '../_nav'
-import { Header as AppHeader, Sidebar, Footer as AppFooter, Breadcrumb } from '../components/'
+// import { Header as AppHeader, Sidebar, Footer as AppFooter, Breadcrumb } from '../components/'
 
 export default {
   name: 'RootContainer',
   components: {
-    AppHeader,
-    Sidebar,
-    AppFooter,
-    Breadcrumb
   },
   data () {
     return {
-      nav: nav.items
     }
   },
   computed: {
