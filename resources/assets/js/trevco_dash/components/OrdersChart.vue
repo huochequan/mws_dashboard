@@ -4,7 +4,6 @@ import dateArray from 'moment-array-dates';
 import Chart from 'chart.js'
 
 import * as moment from 'moment';
-var sameDay = (order) => { return moment().isSame(order.purchaseDate, 'day')};
 var arraySum = (x, y) =>{
   return x+y;
 }
