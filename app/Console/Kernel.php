@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\OrderSyncService;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,8 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('trevco:sync-orders')->everyTenMinutes();
+        $schedule->command('trevco:sync-orders --start=' . Carbon::now()->subDays(30)->format('d-m-Y') . ' --end=' . Carbon::now()->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('02:00');
+        $schedule->command('trevco:sync-orders --start=' . Carbon::now()->subDays(60)->format('d-m-Y') . ' --end=' . Carbon::now()->subDays(31)->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('03:00');
     }
 
     /**
