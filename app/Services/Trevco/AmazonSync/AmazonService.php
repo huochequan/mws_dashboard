@@ -130,7 +130,6 @@ abstract class AmazonService extends Command
             $this->output->writeln(sprintf('Report request with ID %s was loaded', $reportRequestId));
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
             $this->persistenceService->saveModelsFromFile(Order::class, storage_path('app/amazon-mws/reports/' . $this->getInventoryFilename()));
-            Storage::disk('local')->deleteDirectory('amazon-mws/reports', true);
         } catch (\Exception $ex) {
             dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());

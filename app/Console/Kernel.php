@@ -26,7 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('trevco:update-sales-data')->everyMinute();
         $schedule->command('trevco:sync-orders')->everyTenMinutes();
+        $schedule->command('trevco:calculate-previous30')->hourly();
         $schedule->command('trevco:sync-orders --start=' . Carbon::now()->subDays(30)->format('d-m-Y') . ' --end=' . Carbon::now()->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('02:00');
         $schedule->command('trevco:sync-orders --start=' . Carbon::now()->subDays(60)->format('d-m-Y') . ' --end=' . Carbon::now()->subDays(31)->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('03:00');
     }
