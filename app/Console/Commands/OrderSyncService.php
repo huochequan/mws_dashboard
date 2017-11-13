@@ -14,7 +14,7 @@ class OrderSyncService extends Command
      *
      * @var string
      */
-    protected $signature = 'trevco:sync-orders {days_past=1 : Range in number of days since present day}';
+    protected $signature = 'trevco:sync-orders {--start= : Starting date or report [DD-MM-YYYY]} {--end= : End date or report [DD-MM-YYYY]}';
     // protected $signature = 'trevco:sync-orders {days_past}';
 
     /**
@@ -42,9 +42,12 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
-        $daysPast = $this->argument('days_past');
+        $dateRange = [];
+        $dateRange['startDate'] = $this->option('start') ? $this->option('start') : null;
+        $dateRange['endDate'] = $this->option('end') ? $this->option('end') : null;
+
         $persistenceService = new AmazonReportModelSync($this->reportTransformer);
-        $service = new AmazonOrderSyncService($persistenceService, $daysPast);
+        $service = new AmazonOrderSyncService($persistenceService, $dateRange);
         $service->execute($this->input, $this->output);
     }
 }

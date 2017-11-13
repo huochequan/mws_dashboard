@@ -66,7 +66,6 @@
 <script>
 import OrdersChart from '../components/OrdersChart';
 import axios from 'axios';
-import * as moment from 'moment';
 var arraySum = (x, y) =>{
   return x+y;
 }
@@ -138,7 +137,20 @@ export default {
         this.ordersToday = response.data.data.ordersToday,
         this.unshippedCount = response.data.data.unshippedCount,
         this.salesData = response.data.data.saleDaysData
-      });
+      });      
+    setInterval(function() {
+      axios
+        .get('/order')
+        .then((response) => {
+          this.salesToday = response.data.data.salesToday,
+          this.salesYesterday = response.data.data.salesYesterday,
+          this.salesLast30Days = response.data.data.salesLast30Days,
+          this.salesPrevious30Days = response.data.data.salesPrevious30Days,
+          this.ordersToday = response.data.data.ordersToday,
+          this.unshippedCount = response.data.data.unshippedCount,
+          this.salesData = response.data.data.saleDaysData
+        });      
+    }, 900000)
   },
   computed: {
      percentageDiffSalesYesterday() {

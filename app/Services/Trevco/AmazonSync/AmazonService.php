@@ -51,14 +51,14 @@ abstract class AmazonService extends Command
     /**
      * @var string
      */
-    protected $daysPast;
+    protected $dateRange;
 
-    public function __construct($reportType, $persistenceService, $daysPast)
+    public function __construct($reportType, $persistenceService, $dateRange)
     {
         $this->configFile = config_path('amazon.php');
         $this->persistenceService = $persistenceService;
         $this->reportType = $reportType;
-        $this->daysPast = $daysPast;
+        $this->dateRange = $dateRange;
     }
 
     public function setOutput(OutputInterface $output)
@@ -129,8 +129,8 @@ abstract class AmazonService extends Command
             $amazonReport = $this->fetchReport($amazonReportData);
             $this->output->writeln(sprintf('Report request with ID %s was loaded', $reportRequestId));
             Storage::disk('local')->put('amazon-mws/reports/' . $this->getInventoryFilename(), $amazonReport);
-            // $this->persistenceService->saveModels(Order::class, $amazonReport);
             $this->persistenceService->saveModelsFromFile(Order::class, storage_path('app/amazon-mws/reports/' . $this->getInventoryFilename()));
+            Storage::disk('local')->deleteDirectory('amazon-mws/reports', true);
         } catch (\Exception $ex) {
             dump($ex);
             $this->output->writeln('There was a problem with the Amazon library. Error: '.$ex->getMessage());
@@ -147,7 +147,10 @@ abstract class AmazonService extends Command
     public function sendReportRequest()
     {
         $amazonReportRequest = new AmazonReportRequest('default', false, null, $this->configFile);
-        $amazonReportRequest->setTimeLimits(Carbon::now()->subDays($this->daysPast)->startOfDay()->toDateTimeString(),Carbon::now()->endOfDay()->toDateTimeString());
+        $startDate = $this->dateRange['startDate'] ? Carbon::parse($this->dateRange['startDate'])->startOfDay()->toDateTimeString(): Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
+        $endDate = $this->dateRange['endDate'] ? Carbon::parse($this->dateRange['endDate'])->endOfDay()->toDateTimeString(): Carbon::now()->endOfDay()->toDateTimeString();
+
+        $amazonReportRequest->setTimeLimits($startDate, $endDate);
         $amazonReportRequest->setReportType($this->reportType);
         $amazonReportRequest->requestReport();
         return $amazonReportRequest->getReportRequestId();
