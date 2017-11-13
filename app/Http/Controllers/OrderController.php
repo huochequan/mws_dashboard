@@ -56,10 +56,9 @@ class OrderController extends AppBaseController
                 }
                 $salesLast30Days += $dayFBMSales + $dayFBASales;
 
-                if (Carbon::now()->toDateString() == $day->toDateString()) {
+                if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
                     $salesToday += $dayFBMSales + $dayFBASales;
                 }
-                $salesToday += (Carbon::now()->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
                 $salesYesterday += (Carbon::yesterday()->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
                 return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
             },$saleDaysRange);
