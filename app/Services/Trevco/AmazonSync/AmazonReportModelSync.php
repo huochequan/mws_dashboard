@@ -55,14 +55,15 @@ class AmazonReportModelSync
 		    $order = camel_keys(json_decode(json_encode(simplexml_load_string($orderNode)), true));
 	        $orderItems = array_get($order, 'orderItem');
 	        dump($order['amazonOrderID']);
-	        $createdOrder = \App::make(OrderRepository::class)->updateOrCreate(array_only($order, ['amazonOrderID', 'merchantOrderID']),array_except($order, ['orderItem']));
-
-        	$createdOrder->orderItem()->delete();
-	        if (empty($orderItems[0])) {
-	        	$createdOrder->orderItem()->create($orderItems);
-	        }
-	        else {
-	        	$createdOrder->orderItem()->createMany($orderItems);
+	        if ($order['orderStatus'] != "Cancelled") {
+		        $createdOrder = \App::make(OrderRepository::class)->updateOrCreate(array_only($order, ['amazonOrderID', 'merchantOrderID']),array_except($order, ['orderItem']));
+	        	$createdOrder->orderItem()->delete();
+		        if (empty($orderItems[0])) {
+		        	$createdOrder->orderItem()->create($orderItems);
+		        }
+		        else {
+		        	$createdOrder->orderItem()->createMany($orderItems);
+		        }
 	        }
 		}
         unlink($reportDataFile);		

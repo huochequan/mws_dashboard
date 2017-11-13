@@ -46,6 +46,10 @@ class OrderController extends AppBaseController
                 $dayFBASales = 0;
                 $dayFBMSales = 0;
                 foreach (Order::where('purchaseDate', $day->toDateString())->cursor() as $order) {
+                    if ($order->orderStatus == "Cancelled") {
+                        $order->delete();
+                        continue;
+                    }
                     $dayFBASales += ($order->fulfillmentData['fulfillmentChannel'] == "Amazon") ? $order->total :  0;
                     $dayFBMSales += ($order->fulfillmentData['fulfillmentChannel'] == "Merchant") ? $order->total: 0;
                     $unshippedCount += (($order->fulfillmentData['fulfillmentChannel'] == "Merchant") && ($order->orderStatus != "Shipped")) ? 1 : 0;
@@ -59,18 +63,23 @@ class OrderController extends AppBaseController
                 $salesYesterday += (Carbon::yesterday()->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
                 return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
             },$saleDaysRange);
-            return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData');
+            $ordersToday = Order::where('purchaseDate', Carbon::today()->toDateString())->count();
+            return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData', 'ordersToday');
         });
         $salesLast30Days = $salesDataInfo['salesLast30Days'];
         $salesToday = $salesDataInfo['salesToday'];
         $salesYesterday = $salesDataInfo['salesYesterday'];
         $unshippedCount = $salesDataInfo['unshippedCount'];
         $saleDaysData = $salesDataInfo['saleDaysData'];
-        $ordersToday = Order::where('purchaseDate', Carbon::today()->toDateString())->count();
+        $ordersToday = $salesDataInfo['ordersToday'];
 
         $salesPrevious30Days = Cache::remember('salesPrevious30Days', 1200, function () {
             $salesPrevious30Days = 0;
             foreach(Order::whereBetween('purchaseDate', [Carbon::now()->subDays(60)->toDateString(), Carbon::now()->subDays(31)->toDateString()])->cursor() as $order) {
+                if ($order->orderStatus == "Cancelled") {
+                    $order->delete();
+                    continue;
+                }
                 $salesPrevious30Days += $order->total;
             }
             return $salesPrevious30Days;
