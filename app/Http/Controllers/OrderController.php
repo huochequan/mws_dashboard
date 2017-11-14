@@ -35,11 +35,11 @@ class OrderController extends AppBaseController
     {
         ini_set('max_execution_time', 0);
         $salesDataInfo = Cache::remember('salesDataInfo', 15, function () {
-            $saleDaysRange = date_range(Carbon::now()->subDays(29)->startOfDay(), Carbon::now()->endOfDay());
+            $saleDaysRange = date_range(Carbon::now()->tz('America/Los_Angeles')->subDays(29)->startOfDay(), Carbon::now()->tz('America/Los_Angeles')->endOfDay());
             $salesLast30Days = 0;
             $salesToday = 0;
             $salesYesterday = 0;
-            $today = Carbon::now()->toDateString();
+            $today = Carbon::now()->tz('America/Los_Angeles')->toDateString();
             $unshippedCount = 0;
             $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday, &$unshippedCount)
             {
@@ -74,7 +74,7 @@ class OrderController extends AppBaseController
 
         $salesPrevious30Days = Cache::remember('salesPrevious30Days', 1200, function () {
             $salesPrevious30Days = 0;
-            foreach(Order::whereBetween('purchaseDate', [Carbon::now()->subDays(60)->toDateString(), Carbon::now()->subDays(31)->toDateString()])->cursor() as $order) {
+            foreach(Order::whereBetween('purchaseDate', [Carbon::now()->tz('America/Los_Angeles')->subDays(60)->toDateString(), Carbon::now()->tz('America/Los_Angeles')->subDays(31)->toDateString()])->cursor() as $order) {
                 if ($order->orderStatus == "Cancelled") {
                     $order->delete();
                     continue;
@@ -84,7 +84,6 @@ class OrderController extends AppBaseController
             return $salesPrevious30Days;
         });        
         return $this->sendResponse(compact('saleDaysData', 'salesLast30Days','salesPrevious30Days', 'salesToday', 'salesYesterday', 'ordersToday', 'unshippedCount'), 'Orders retrieved successfully');
-
     }
 
     /**
