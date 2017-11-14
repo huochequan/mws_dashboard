@@ -121,24 +121,10 @@ export default {
       }
       return $variant
     },
-
     dashboardFormatted (value) {
       return round2Fixed(value);
-    }
-  },
-  mounted () {
-    axios
-      .get('/order')
-      .then((response) => {
-        this.salesToday = response.data.data.salesToday,
-        this.salesYesterday = response.data.data.salesYesterday,
-        this.salesLast30Days = response.data.data.salesLast30Days,
-        this.salesPrevious30Days = response.data.data.salesPrevious30Days,
-        this.ordersToday = response.data.data.ordersToday,
-        this.unshippedCount = response.data.data.unshippedCount,
-        this.salesData = response.data.data.saleDaysData
-      });      
-    setInterval(function() {
+    },
+    loadOrders () {
       axios
         .get('/order')
         .then((response) => {
@@ -149,18 +135,18 @@ export default {
           this.ordersToday = response.data.data.ordersToday,
           this.unshippedCount = response.data.data.unshippedCount,
           this.salesData = response.data.data.saleDaysData
-        });      
-    }, 900000)
+        });
+    }
+  },
+  mounted () {
+    this.loadOrders();
+    setInterval(this.loadOrders.bind(this), 900000)
   },
   computed: {
      percentageDiffSalesYesterday() {
       if (this.salesYesterday == 0) {
         return "--";
       }
-
-      // if (this.salesToday == 0) {
-      //   return "--";
-      // }
       return parseInt(Math.abs(this.salesToday - this.salesYesterday) / this.salesYesterday * 100) + "%" || "--";
     },
     percentageDiffSalesYesterdaySign() {
