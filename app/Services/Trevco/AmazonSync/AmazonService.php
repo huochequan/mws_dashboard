@@ -146,8 +146,8 @@ abstract class AmazonService extends Command
     public function sendReportRequest()
     {
         $amazonReportRequest = new AmazonReportRequest('default', false, null, $this->configFile);
-        $startDate = $this->dateRange['startDate'] ? Carbon::parse($this->dateRange['startDate'])->startOfDay()->toDateTimeString(): Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-        $endDate = $this->dateRange['endDate'] ? Carbon::parse($this->dateRange['endDate'])->endOfDay()->toDateTimeString(): Carbon::now()->endOfDay()->toDateTimeString();
+        $startDate = $this->dateRange['startDate'] ? Carbon::parse($this->dateRange['startDate'])->startOfDay()->toDateTimeString(): Carbon::now()->tz('America/Los_Angeles')->subDays(1)->startOfDay()->toDateTimeString();
+        $endDate = $this->dateRange['endDate'] ? Carbon::parse($this->dateRange['endDate'])->endOfDay()->toDateTimeString(): Carbon::now()->tz('America/Los_Angeles')->endOfDay()->toDateTimeString();
 
         $amazonReportRequest->setTimeLimits($startDate, $endDate);
         $amazonReportRequest->setReportType($this->reportType);
