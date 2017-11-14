@@ -60,10 +60,10 @@ Artisan::command('trevco:update-sales-data', function () {
             if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
                 $salesToday += $dayFBMSales + $dayFBASales;
             }
-            $salesYesterday += (Carbon::yesterday()->tz('America/Los_Angeles')->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
+            $salesYesterday += (Carbon::now()->subDays(1)->tz('America/Los_Angeles')->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
             return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
         },$saleDaysRange);
-        $ordersToday = Order::where('purchaseDate', Carbon::today()->tz('America/Los_Angeles')->toDateString())->count();
+        $ordersToday = Order::where('purchaseDate', Carbon::now()->tz('America/Los_Angeles')->toDateString())->count();
         return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData', 'ordersToday');
     });
 })->describe('Update Sales figures');
