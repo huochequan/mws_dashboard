@@ -184,3 +184,10 @@ $headings-color: #7F303C;
 body {
   overflow: hidden;
 }
+.order-data-value.positive{
+  color: #35ee14;
+}
+
+.order-data-value.negative{
+  color: #ee1435;
+}
