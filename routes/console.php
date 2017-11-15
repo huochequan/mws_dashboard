@@ -35,7 +35,7 @@ Artisan::command('trevco:calculate-previous30', function () {
 })->describe('Calculate and cache sales figures for previous 30 days');
 
 Artisan::command('trevco:update-sales-data', function () {
-    $salesDataInfo = Cache::remember('salesDataInfo', 15, function () {
+    $salesDataInfo = Cache::remember('salesDataInfo', 5, function () {
         $saleDaysRange = date_range(Carbon::now()->tz('America/Los_Angeles')->subDays(29)->startOfDay(), Carbon::now()->tz('America/Los_Angeles')->endOfDay());
         $salesLast30Days = 0;
         $salesToday = 0;
