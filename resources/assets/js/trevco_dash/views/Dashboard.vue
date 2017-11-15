@@ -22,7 +22,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-darken" :no-block="true">
           <div class="card-body pb-0">
-            <h1 class="order-data-value text-center mb-0">{{ percentageDiffSalesPrevious30DaysSign }} {{ percentageDiffSalesPrevious30Days }}</h1>
+            <h1 class="order-data-value text-center mb-0" :class="[monthlySalesLower ? 'negative':'positive']">{{ percentageDiffSalesPrevious30DaysSign }} {{ percentageDiffSalesPrevious30Days }}</h1>
             <p class="h5 order-data-caption text-center font-weight-bold">Previous 30 days</p>
           </div>
         </b-card>
@@ -46,7 +46,7 @@
       <div class="col-sm-12 col-lg-2">
         <b-card class="order-detail-card bg-darken" :no-block="true">
           <div class="card-body pb-0">
-            <h1 class="order-data-value text-center mb-0">{{ percentageDiffSalesYesterdaySign }} {{ percentageDiffSalesYesterday }}</h1>
+            <h1 class="order-data-value text-center mb-0" :class="[dailySalesLower ? 'negative':'positive']">{{ percentageDiffSalesYesterdaySign }} {{ percentageDiffSalesYesterday }}</h1>
             <p class="h5 order-data-caption text-center font-weight-bold">Yesterday</p>
           </div>
         </b-card>
@@ -168,6 +168,12 @@ export default {
       }
       return parseFloat(this.salesLast30Days) > parseFloat(this.salesPrevious30Days) ? "+" : parseFloat(this.salesLast30Days) == parseFloat(this.salesPrevious30Days) ? "" : "-";
     },
+    dailySalesLower() {
+      return this.salesYesterday > this.salesToday;
+    },
+    monthlySalesLower() {
+      return this.salesPrevious30Days > this.salesLast30Days;
+    }    
  }
 }
 </script>
