@@ -35,18 +35,17 @@ Artisan::command('trevco:calculate-previous30', function () {
 })->describe('Calculate and cache sales figures for previous 30 days');
 
 Artisan::command('trevco:update-sales-data', function () {
-    $salesDataInfo = Cache::remember('salesDataInfo', 15, function () {
+    $salesDataInfo = Cache::remember('salesDataInfo', 5, function () {
         $saleDaysRange = date_range(Carbon::now()->tz('America/Los_Angeles')->subDays(29)->startOfDay(), Carbon::now()->tz('America/Los_Angeles')->endOfDay());
         $salesLast30Days = 0;
         $salesToday = 0;
-        $salesYesterday = 0;
         $today = Carbon::now()->tz('America/Los_Angeles')->toDateString();
         $unshippedCount = 0;
-        $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday, &$unshippedCount)
+        $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$unshippedCount)
         {
             $dayFBASales = 0;
             $dayFBMSales = 0;
-            foreach (Order::where('purchaseDate', $day->toDateString())->cursor() as $order) {
+            foreach (Order::whereDate('purchaseDate', $day->toDateString())->cursor() as $order) {
                 if ($order->orderStatus == "Cancelled") {
                     $order->delete();
                     continue;
@@ -60,9 +59,18 @@ Artisan::command('trevco:update-sales-data', function () {
             if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
                 $salesToday += $dayFBMSales + $dayFBASales;
             }
-            $salesYesterday += (Carbon::now()->subDays(1)->tz('America/Los_Angeles')->toDateString() == $day->toDateString())? $dayFBMSales + $dayFBASales : 0;
             return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
         },$saleDaysRange);
+        // Calculate sales yesterday at this point in the day
+        $salesYesterday = 0;
+        foreach (Order::whereBetween('purchaseDate', [Carbon::now()->tz('America/Los_Angeles')->subDays(1)->startOfDay()->toDateTimeString(), Carbon::now()->tz('America/Los_Angeles')->subDays(1)->toDateTimeString()])->cursor() as $order) {
+            if ($order->orderStatus == "Cancelled") {
+                $order->delete();
+                continue;
+            }
+            $salesYesterday += $order->total;
+        }
+
         $ordersToday = Order::where('purchaseDate', Carbon::now()->tz('America/Los_Angeles')->toDateString())->count();
         return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData', 'ordersToday');
     });

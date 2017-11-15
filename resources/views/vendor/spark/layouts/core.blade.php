@@ -14,7 +14,9 @@
 
     <!-- CSS -->
     <link href="/css/sweetalert.css" rel="stylesheet">
-    <link href="{{ mix('css/style.css') }}" rel="stylesheet">
+    {{-- <link href="{{ mix('css/style.css') }}" rel="stylesheet"> --}}
+    <link href="{{ mix('css/vue-style.css') }}" rel="stylesheet">
+    {{-- <link href="{{ mix('css/app.css') }}" rel="stylesheet"> --}}
 
     <!-- Scripts -->
     @yield('scripts', '')

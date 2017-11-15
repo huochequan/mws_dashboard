@@ -140,7 +140,7 @@ export default {
   },
   mounted () {
     this.loadOrders();
-    setInterval(this.loadOrders.bind(this), 900000)
+    setInterval(this.loadOrders.bind(this), 120000)
   },
   computed: {
      percentageDiffSalesYesterday() {
