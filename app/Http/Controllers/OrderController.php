@@ -70,7 +70,7 @@ class OrderController extends AppBaseController
                 }
                 $salesYesterday += $order->total;
             }
-            $ordersToday = Order::where('purchaseDate', Carbon::now()->tz('America/Los_Angeles')->toDateString())->count();
+            $ordersToday = Order::whereDate('purchaseDate', Carbon::now()->tz('America/Los_Angeles')->toDateString())->count();
             return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData', 'ordersToday');
         });
         $salesLast30Days = $salesDataInfo['salesLast30Days'];
