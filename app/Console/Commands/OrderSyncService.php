@@ -6,6 +6,7 @@ use App\Services\Trevco\AmazonReportTransformer;
 use App\Services\Trevco\AmazonSync\AmazonOrderSyncService;
 use App\Services\Trevco\AmazonSync\AmazonReportModelSync;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class OrderSyncService extends Command
 {
@@ -49,5 +50,7 @@ class OrderSyncService extends Command
         $persistenceService = new AmazonReportModelSync($this->reportTransformer);
         $service = new AmazonOrderSyncService($persistenceService, $dateRange);
         $service->execute($this->input, $this->output);
+
+        $exitCode = Artisan::call('trevco:update-sales-data');
     }
 }
