@@ -54,3 +54,20 @@ if (!function_exists('date_range')) {
         return ! empty($range) ? $range : null;
     }
 }
+
+if (!function_exists('is_service_running')) {
+    /**
+     * Convert array keys to camel case recursively.
+     *
+     * @param  array $array
+     * @return string
+     */
+    function is_service_running($service)
+    {
+        $output = array_where(explode(PHP_EOL, trim(`ps aux | grep '{$service}'`)),function ($processName, $key) use ($service)
+        {
+            return !str_contains($processName, "/dev/null") && str_contains($processName, "artisan {$service}");
+        });
+        return count($output) > 1;
+    }
+}
