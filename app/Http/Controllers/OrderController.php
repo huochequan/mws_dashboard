@@ -6,13 +6,14 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\API\CreateOrderAPIRequest;
 use App\Http\Requests\API\UpdateOrderAPIRequest;
 use App\Order;
+use App\Repositories\OrderAPIDataRepository;
 use App\Repositories\OrderRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
-use Illuminate\Support\Facades\Cache;
 
 class OrderController extends AppBaseController
 {
@@ -33,46 +34,10 @@ class OrderController extends AppBaseController
      */
     public function index(Request $request)
     {
-        ini_set('max_execution_time', 0);
-        $salesDataInfo = Cache::remember('salesDataInfo', 15, function () {
-            $saleDaysRange = date_range(Carbon::now()->tz('America/Los_Angeles')->subDays(29)->startOfDay(), Carbon::now()->tz('America/Los_Angeles')->endOfDay());
-            $salesLast30Days = 0;
-            $salesToday = 0;
-            $today = Carbon::now()->tz('America/Los_Angeles')->toDateString();
-            $unshippedCount = 0;
-            $saleDaysData = array_map(function ($day) use (&$salesLast30Days, &$salesToday, &$salesYesterday, &$unshippedCount)
-            {
-                $dayFBASales = 0;
-                $dayFBMSales = 0;
-                foreach (Order::whereDate('purchaseDate', $day->toDateString())->cursor() as $order) {
-                    if ($order->orderStatus == "Cancelled") {
-                        $order->delete();
-                        continue;
-                    }
-                    $dayFBASales += ($order->fulfillmentData['fulfillmentChannel'] == "Amazon") ? $order->total :  0;
-                    $dayFBMSales += ($order->fulfillmentData['fulfillmentChannel'] == "Merchant") ? $order->total: 0;
-                    $unshippedCount += (($order->fulfillmentData['fulfillmentChannel'] == "Merchant") && ($order->orderStatus != "Shipped")) ? 1 : 0;
-                }
-                $salesLast30Days += $dayFBMSales + $dayFBASales;
-
-                if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
-                    $salesToday += $dayFBMSales + $dayFBASales;
-                }
-
-                return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
-            },$saleDaysRange);
-            // Calculate sales yesterday at this point in the day
-            $salesYesterday = 0;
-            foreach (Order::whereBetween('purchaseDate', [Carbon::now()->tz('America/Los_Angeles')->subDays(1)->startOfDay()->toDateTimeString(), Carbon::now()->tz('America/Los_Angeles')->subDays(1)->toDateTimeString()])->cursor() as $order) {
-                if ($order->orderStatus == "Cancelled") {
-                    $order->delete();
-                    continue;
-                }
-                $salesYesterday += $order->total;
-            }
-            $ordersToday = Order::whereDate('purchaseDate', Carbon::now()->tz('America/Los_Angeles')->toDateString())->count();
-            return compact('salesLast30Days', 'salesToday', 'salesYesterday', 'unshippedCount', 'saleDaysData', 'ordersToday');
-        });
+        if (!Cache::has('salesDataInfo')) {
+            return $this->sendError('Sales Data Unavailable at the moment');
+        }
+        $salesDataInfo = Cache::get('salesDataInfo');
         $salesLast30Days = $salesDataInfo['salesLast30Days'];
         $salesToday = $salesDataInfo['salesToday'];
         $salesYesterday = $salesDataInfo['salesYesterday'];
@@ -81,15 +46,8 @@ class OrderController extends AppBaseController
         $ordersToday = $salesDataInfo['ordersToday'];
 
         $salesPrevious30Days = Cache::remember('salesPrevious30Days', 1200, function () {
-            $salesPrevious30Days = 0;
-            foreach(Order::whereBetween('purchaseDate', [Carbon::now()->tz('America/Los_Angeles')->subDays(60)->toDateString(), Carbon::now()->tz('America/Los_Angeles')->subDays(31)->toDateString()])->cursor() as $order) {
-                if ($order->orderStatus == "Cancelled") {
-                    $order->delete();
-                    continue;
-                }
-                $salesPrevious30Days += $order->total;
-            }
-            return $salesPrevious30Days;
+            $orderApiDataRepo = new OrderAPIDataRepository();
+            return $orderApiDataRepo->getSalesPrevious30Days();
         });        
         return $this->sendResponse(compact('saleDaysData', 'salesLast30Days','salesPrevious30Days', 'salesToday', 'salesYesterday', 'ordersToday', 'unshippedCount'), 'Orders retrieved successfully');
     }

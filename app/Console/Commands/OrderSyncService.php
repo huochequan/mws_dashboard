@@ -43,6 +43,9 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
+        if (is_service_running("trevco:")) {
+            return 0;
+        }
         $dateRange = [];
         $dateRange['startDate'] = $this->option('start') ? $this->option('start') : null;
         $dateRange['endDate'] = $this->option('end') ? $this->option('end') : null;
