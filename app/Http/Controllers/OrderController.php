@@ -34,7 +34,7 @@ class OrderController extends AppBaseController
     public function index(Request $request)
     {
         ini_set('max_execution_time', 0);
-        $salesDataInfo = Cache::remember('salesDataInfo', 5, function () {
+        $salesDataInfo = Cache::remember('salesDataInfo', 15, function () {
             $saleDaysRange = date_range(Carbon::now()->tz('America/Los_Angeles')->subDays(29)->startOfDay(), Carbon::now()->tz('America/Los_Angeles')->endOfDay());
             $salesLast30Days = 0;
             $salesToday = 0;
