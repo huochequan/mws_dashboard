@@ -1,4 +1,7 @@
 <?php
+
+use Symfony\Component\Process\Process;
+
 if (!function_exists('camel_keys')) {
     /**
      * Convert array keys to camel case recursively.
@@ -64,10 +67,13 @@ if (!function_exists('is_service_running')) {
      */
     function is_service_running($service)
     {
-        $output = array_where(explode(PHP_EOL, trim(`ps aux | grep '{$service}'`)),function ($processName, $key) use ($service)
+        $process = new Process(trim("/bin/ps -e -o command | grep {$service}"));
+        $process->run();
+        $output = array_where(explode(PHP_EOL, $process->getOutput()),function ($processName, $key) use ($service)
         {
             return !str_contains($processName, "/dev/null") && str_contains($processName, "artisan {$service}");
         });
-        return count($output) > 1;
+        //\Log::info($output);
+        return count($output) > 1;       
     }
 }

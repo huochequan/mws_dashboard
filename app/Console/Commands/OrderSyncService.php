@@ -43,7 +43,7 @@ class OrderSyncService extends Command
      */
     public function handle()
     {
-        if (is_service_running("trevco:")) {
+        if (is_service_running("trevco")) {
             return 0;
         }
         $dateRange = [];
