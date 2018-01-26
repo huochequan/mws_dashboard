@@ -13,9 +13,11 @@ use ReflectionClass;
 class AmazonReportModelSync
 {
 	protected $reportTransformer;
-	function __construct(AmazonReportTransformer $reportTransformer)
+	protected $seller;
+	function __construct(AmazonReportTransformer $reportTransformer, $seller)
 	{
 		$this->reportTransformer = $reportTransformer;
+		$this->seller = $seller;
 	}
 	public function saveModels($modelName, $reportData)
 	{
@@ -46,6 +48,7 @@ class AmazonReportModelSync
 
 	public function saveModelsFromFile($modelName, $reportDataFile)
 	{
+		// Specify the sellerID of the order.
 		$model = \App::make($modelName);
 		$dataType = (new ReflectionClass($model))->getShortName();
 		$stream = new Stream\File($reportDataFile, 1024);
@@ -53,6 +56,7 @@ class AmazonReportModelSync
 		$streamer =  XmlStringStreamer::createUniqueNodeParser($reportDataFile, array("uniqueNode" => $dataType));
 		while ($orderNode = $streamer->getNode()) {
 		    $order = camel_keys(json_decode(json_encode(simplexml_load_string($orderNode)), true));
+		    $order = array_add($order, 'sellerID', $this->getSellerID($this->seller));
 	        $orderItems = array_get($order, 'orderItem');
 	        dump($order['amazonOrderID']);
 	        if ($order['orderStatus'] != "Cancelled") {
@@ -68,5 +72,26 @@ class AmazonReportModelSync
 		}
         unlink($reportDataFile);		
 		return true;
+	}
+
+	private function getSellerID($seller)
+	{
+		$sellers = [
+			[
+				'id' => 1,
+				'seller' => 'popfunk'
+			],
+			[
+				'id' => 2,
+				'seller' => 'trevco'
+			]
+		];
+		if (!$sellers) {
+			return null;
+		}
+		return array_first($sellers, function ($value) use ($seller)
+		{
+			return $value['seller'] == $seller;
+		})['id'];
 	}
 }

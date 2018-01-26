@@ -51,14 +51,14 @@ class OrderSyncService extends Command
         $dateRange['startDate'] = $this->option('start') ? $this->option('start') : null;
         $dateRange['endDate'] = $this->option('end') ? $this->option('end') : null;
         $configFile = $this->getNextSellerConfig($this->option('seller'));
-        $persistenceService = new AmazonReportModelSync($this->reportTransformer);
+        $persistenceService = new AmazonReportModelSync($this->reportTransformer, str_before($configFile,'.php'));
         $service = new AmazonOrderSyncService($persistenceService, $dateRange, $configFile);
         $service->execute($this->input, $this->output);
 
         $exitCode = Artisan::call('trevco:update-sales-data');
     }
 
-    public function getNextSellerConfig($queueKey)
+    private function getNextSellerConfig($queueKey)
     {
         $nextSeller = null;
         if (Cache::has($queueKey)) {
@@ -76,7 +76,7 @@ class OrderSyncService extends Command
 
         return $nextSeller . '.php';
     }
-    public function initSellerQueueFromDatabase($queueKey)
+    private function initSellerQueueFromDatabase($queueKey)
     {
         return ['popfunk', 'trevco'];
         // TODO

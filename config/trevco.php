@@ -22,7 +22,7 @@ $store['default']['marketplaceId'] = 'AKIAJXXUOTERRZKBB7ZQ'; //Marketplace ID fo
 $store['default']['keyId'] = 'AKIAJQ4ZJBZBPSZEMIKQ'; //Access Key ID
 $store['default']['secretKey'] = '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'; //Secret Access Key for this store
 $store['default']['serviceUrl'] = ''; //optional override for Service URL
-$store['default']['MWSAuthToken'] = 'amzn.mws.1caa2beb-a35e-1dde-0287-59a57106365f'; //token needed for web apps and third-party developers
+//$store['default']['MWSAuthToken'] = 'amzn.mws.1caa2beb-a35e-1dde-0287-59a57106365f'; //token needed for web apps and third-party developers
 $store['default']['shipToCountryCode'] = 'us'; //token needed for web apps and third-party developers
 
 //Service URL Base
