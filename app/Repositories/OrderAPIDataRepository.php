@@ -19,6 +19,7 @@ class OrderAPIDataRepository
         {
             $dayFBASales = 0;
             $dayFBMSales = 0;
+            // For each day calculate fbmsales and fbasales.
             foreach (Order::whereDate('purchaseDate', $day->toDateString())->cursor() as $order) {
                 if ($order->orderStatus == "Cancelled") {
                     $order->delete();
@@ -34,6 +35,10 @@ class OrderAPIDataRepository
                 $salesToday += $dayFBMSales + $dayFBASales;
             }
             return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];
+
+/* 
+            return ['purchaseDate' => $day->format('M d'), 'sales' => ['seller' => $seller , 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales]];
+*/
         },$saleDaysRange);
         // Calculate sales yesterday at this point in the day
         $salesYesterday = 0;
