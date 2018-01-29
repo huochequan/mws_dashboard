@@ -134,7 +134,8 @@ export default {
           this.salesPrevious30Days = response.data.data.salesPrevious30Days,
           this.ordersToday = response.data.data.ordersToday,
           this.unshippedCount = response.data.data.unshippedCount,
-          this.salesData = response.data.data.saleDaysData
+          // this.salesData = response.data.data.saleDaysData
+          this.salesData = response.data.data.sales
         });
     }
   },

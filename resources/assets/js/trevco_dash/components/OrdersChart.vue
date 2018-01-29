@@ -21,7 +21,10 @@ var round2Fixed = (value) => {
   value = value.toString().split('e');
   return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
 }
+
 Chart.defaults.global.defaultFontFamily = '"Signika",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+
+
 export default Bar.extend({
   props: {
     'salesData': {
@@ -38,10 +41,18 @@ export default Bar.extend({
   watch: {
     salesData: function(newOrders) {
       this.dailyFBASalesArray = newOrders.map(function(elem) {
-        return elem.dayFBASales;
+        return elem.sales.filter(function(saleData) {
+          return saleData.seller == "popfunk";
+        }).reduce(function (sum, value) {
+          return sum + value.dailyFBASales
+        }, 0);
       })
       this.dailyFBMSalesArray = newOrders.map(function(elem) {
-        return elem.dayFBMSales;
+        return elem.sales.filter(function(saleData) {
+          return saleData.seller == "popfunk";
+        }).reduce(function (sum, value) {
+          return sum + value.dailyFBMSales
+        }, 0);
       })
 
       this.rerenderChart();
