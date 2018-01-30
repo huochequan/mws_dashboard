@@ -2,6 +2,7 @@
 
 use App\Order;
 use App\Repositories\OrderAPIDataRepository;
+use App\Services\Trevco\NextSellerCacheManager;
 use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Cache;
@@ -33,4 +34,27 @@ Artisan::command('trevco:update-sales-data', function () {
     $salesDataInfo = $orderApiDataRepo->getSalesDataInfo();
     Cache::forget('salesDataInfo');
     Cache::put('salesDataInfo', $salesDataInfo, 60);
+    $exitCode = Artisan::call('trevco:update-unshipped-order-count');
+    $exitCode = Artisan::call('trevco:update-unshipped-order-count');
 })->describe('Update Sales figures');
+
+Artisan::command('trevco:update-unshipped-order-count {seller?}', function ($seller=null) {
+	$seller = $seller ? $seller : (new NextSellerCacheManager('unshippedCount'))->getNextSeller();
+	$amazonOrderListClient = new AmazonOrderList('default', false, null, config_path($seller.'.php'));
+	$amazonOrderListClient->setLimits('Created', '- 30 days');
+	$amazonOrderListClient->setFulfillmentChannelFilter("MFN");
+	$amazonOrderListClient->setOrderStatusFilter(["Unshipped", "PartiallyShipped"]);
+	$amazonOrderListClient->setUseToken();
+	$amazonOrderListClient->fetchOrders();
+	$salesDataInfo = [];
+	if (Cache::has('salesDataInfo')) {
+		$salesDataInfo = Cache::get('salesDataInfo');
+	}
+	if(!isset($salesDataInfo['unshippedCount']) || !is_array($salesDataInfo['unshippedCount']) ) { 
+		$salesDataInfo['unshippedCount'] = [];
+	}
+	$salesDataInfo['unshippedCount'][$seller] = count($amazonOrderListClient->getList());
+    Cache::forget('salesDataInfo');
+    Cache::put('salesDataInfo', $salesDataInfo, 60);
+})->describe('Display an inspiring quote');
+

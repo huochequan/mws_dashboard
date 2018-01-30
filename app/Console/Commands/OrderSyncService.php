@@ -79,6 +79,5 @@ class OrderSyncService extends Command
     private function initSellerQueueFromDatabase($queueKey)
     {
         return ['popfunk', 'trevco'];
-        // TODO
     }
 }
