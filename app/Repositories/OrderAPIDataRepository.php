@@ -36,16 +36,16 @@ class OrderAPIDataRepository
                     // unshippedCount should include ALL Sales
                     $unshippedCount += (($order->fulfillmentData['fulfillmentChannel'] == "Merchant") && ($order->orderStatus != "Shipped")) ? 1 : 0;
                 }
+                    $salesLast30Days += $dayFBMSales + $dayFBASales;
+
+                    if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
+                        // Sales today should include all sellers
+                        $salesToday += $dayFBMSales + $dayFBASales;
+                    }
                     $sales[] = compact('seller', 'dayFBASales','dayFBMSales');
             }
 
             // salesLast30Days should include ALL Sales
-            $salesLast30Days += $dayFBMSales + $dayFBASales;
-
-            if (Carbon::now()->tz('America/Los_Angeles')->toDateString() == $day->toDateString()) {
-                // Sales today should include all sellers
-                $salesToday += $dayFBMSales + $dayFBASales;
-            }
             // VarDumper::dump(['purchaseDate' => $day->format('M d'), compact('sales')]);
 
             // return ['purchaseDate' => $day->format('M d'), 'dayFBASales' => $dayFBASales, 'dayFBMSales' => $dayFBMSales];

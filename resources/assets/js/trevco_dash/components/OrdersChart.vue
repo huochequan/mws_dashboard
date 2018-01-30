@@ -34,24 +34,43 @@ export default Bar.extend({
   },
   data: function() {
     return {
-      dailyFBASalesArray: [],
-      dailyFBMSalesArray: []
+      popfunkDailyFBASalesArray: [],
+      popfunkDailyFBMSalesArray: [],
+      trevcoFBASalesArray: [],
+      trevcoFBMSalesArray: []
     }
   },
   watch: {
     salesData: function(newOrders) {
-      this.dailyFBASalesArray = newOrders.map(function(elem) {
+      this.popfunkDailyFBASalesArray = newOrders.map(function(elem) {
         return elem.sales.filter(function(saleData) {
           return saleData.seller == "popfunk";
         }).reduce(function (sum, value) {
-          return sum + value.dailyFBASales
+          console.log(value.dayFBASales);
+          return sum + value.dayFBASales
         }, 0);
       })
-      this.dailyFBMSalesArray = newOrders.map(function(elem) {
+      this.popfunkDailyFBMSalesArray = newOrders.map(function(elem) {
         return elem.sales.filter(function(saleData) {
           return saleData.seller == "popfunk";
         }).reduce(function (sum, value) {
-          return sum + value.dailyFBMSales
+          return sum + value.dayFBMSales
+        }, 0);
+      })
+      // Trevco
+      this.trevcoDailyFBASalesArray = newOrders.map(function(elem) {
+        return elem.sales.filter(function(saleData) {
+          return saleData.seller == "trevco";
+        }).reduce(function (sum, value) {
+          console.log(value.dayFBASales);
+          return sum + value.dayFBASales
+        }, 0);
+      })
+      this.trevcoDailyFBMSalesArray = newOrders.map(function(elem) {
+        return elem.sales.filter(function(saleData) {
+          return saleData.seller == "trevco";
+        }).reduce(function (sum, value) {
+          return sum + value.dayFBMSales
         }, 0);
       })
 
@@ -64,14 +83,24 @@ export default Bar.extend({
       labels: this.salesData.map(x => x.purchaseDate),
       datasets: [
         {
-          label: 'FBA',
+          label: 'Trevco - FBA',
           backgroundColor: '#7F0A1B',
-          data: this.dailyFBASalesArray,
+          data: this.trevcoDailyFBASalesArray,
         },
         {
-          label: 'FBM',
+          label: 'Trevco - FBM',
           backgroundColor: '#CC102C',
-          data: this.dailyFBMSalesArray
+          data: this.trevcoDailyFBMSalesArray
+        },
+        {
+          label: 'Popfunk - FBA',
+          backgroundColor: '#003B91',
+          data: this.popfunkDailyFBASalesArray,
+        },
+        {
+          label: 'Popfunk - FBM',
+          backgroundColor: '#0072BB',
+          data: this.popfunkDailyFBMSalesArray
         }
       ]
     }, {
@@ -93,6 +122,12 @@ export default Bar.extend({
         }],
         yAxes: [{
           stacked: true,
+          gridLines: {
+            display: true,
+            offsetGridLines: true,
+            color: 'rgba(255, 255, 255, 0.3)',
+            lineWidth: 0.5
+          },
           ticks:{
             fontSize: 18,
             fontColor: '#fff'
@@ -122,10 +157,18 @@ export default Bar.extend({
       scales: {
         xAxes: [{
           stacked: true,
-          barThickness: 40
+          barThickness: 40,
+          gridLines: {
+            color: "rgba(255, 255, 255, 0.5)",
+            lineWidth: 1
+          }
         }],
         yAxes: [{
-          stacked: true
+          stacked: true,
+          gridLines: {
+            color: "rgba(255, 255, 255, 0.5)",
+            lineWidth: 1
+          }
         }]
       },
       responsive: true})

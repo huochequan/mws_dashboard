@@ -18,7 +18,7 @@
 
 
 $store['default']['merchantId'] = 'A1SLP8ORVLRIRH';//Merchant ID for this store
-$store['default']['marketplaceId'] = 'AKIAJXXUOTERRZKBB7ZQ'; //Marketplace ID for this store
+$store['default']['marketplaceId'] = 'ATVPDKIKX0DER'; //Marketplace ID for this store
 $store['default']['keyId'] = 'AKIAJQ4ZJBZBPSZEMIKQ'; //Access Key ID
 $store['default']['secretKey'] = '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'; //Secret Access Key for this store
 $store['default']['serviceUrl'] = ''; //optional override for Service URL
