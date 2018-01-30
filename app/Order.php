@@ -36,6 +36,7 @@ class Order extends Model
     public $fillable = [
         'amazonOrderID',
         'merchantOrderID',
+        'sellerID',
         'purchaseDate',
         'lastUpdatedDate',
         'orderStatus',
@@ -51,6 +52,7 @@ class Order extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'sellerID' => 'integer',
         'amazonOrderID' => 'string',
         'merchantOrderID' => 'string',
         'orderStatus' => 'string',
@@ -88,7 +90,7 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-
+    
     public function getTotalAttribute()
     {
        return $this->orderItem->map(function($item, $key) {

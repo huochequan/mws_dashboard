@@ -53,9 +53,9 @@ abstract class AmazonService extends Command
      */
     protected $dateRange;
 
-    public function __construct($reportType, $persistenceService, $dateRange)
+    public function __construct($reportType, $persistenceService, $dateRange, $configFile)
     {
-        $this->configFile = config_path('amazon.php');
+        $this->configFile = config_path($configFile);
         $this->persistenceService = $persistenceService;
         $this->reportType = $reportType;
         $this->dateRange = $dateRange;

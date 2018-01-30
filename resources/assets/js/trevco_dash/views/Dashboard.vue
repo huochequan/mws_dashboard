@@ -133,7 +133,8 @@ export default {
           this.salesLast30Days = response.data.data.salesLast30Days,
           this.salesPrevious30Days = response.data.data.salesPrevious30Days,
           this.ordersToday = response.data.data.ordersToday,
-          this.unshippedCount = response.data.data.unshippedCount,
+          console.log(response.data.data.unshippedCount);
+          this.unshippedCount = Object.values(response.data.data.unshippedCount).reduce((a, b) => a + b, 0),
           this.salesData = response.data.data.saleDaysData
         });
     }

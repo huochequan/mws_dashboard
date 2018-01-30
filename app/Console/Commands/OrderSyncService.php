@@ -7,6 +7,7 @@ use App\Services\Trevco\AmazonSync\AmazonOrderSyncService;
 use App\Services\Trevco\AmazonSync\AmazonReportModelSync;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class OrderSyncService extends Command
 {
@@ -15,7 +16,7 @@ class OrderSyncService extends Command
      *
      * @var string
      */
-    protected $signature = 'trevco:sync-orders {--start= : Starting date or report [DD-MM-YYYY]} {--end= : End date or report [DD-MM-YYYY]}';
+    protected $signature = 'trevco:sync-orders {--start= : Starting date or report [DD-MM-YYYY]} {--end= : End date or report [DD-MM-YYYY]} { --seller=sellerQueue}';
     // protected $signature = 'trevco:sync-orders {days_past}';
 
     /**
@@ -49,11 +50,34 @@ class OrderSyncService extends Command
         $dateRange = [];
         $dateRange['startDate'] = $this->option('start') ? $this->option('start') : null;
         $dateRange['endDate'] = $this->option('end') ? $this->option('end') : null;
-
-        $persistenceService = new AmazonReportModelSync($this->reportTransformer);
-        $service = new AmazonOrderSyncService($persistenceService, $dateRange);
+        $configFile = $this->getNextSellerConfig($this->option('seller'));
+        $persistenceService = new AmazonReportModelSync($this->reportTransformer, str_before($configFile,'.php'));
+        $service = new AmazonOrderSyncService($persistenceService, $dateRange, $configFile);
         $service->execute($this->input, $this->output);
 
         $exitCode = Artisan::call('trevco:update-sales-data');
+    }
+
+    private function getNextSellerConfig($queueKey)
+    {
+        $nextSeller = null;
+        if (Cache::has($queueKey)) {
+            $sellers = Cache::get($queueKey);
+            Cache::forget($queueKey);
+        }else{
+            $sellers = $this->initSellerQueueFromDatabase($queueKey);                
+        }
+        Cache::rememberForever($queueKey, function () use ($queueKey, &$nextSeller, &$sellers)
+        {
+            $nextSeller = array_shift($sellers);
+            array_push($sellers, $nextSeller);
+            return $sellers;
+        });
+
+        return $nextSeller . '.php';
+    }
+    private function initSellerQueueFromDatabase($queueKey)
+    {
+        return ['popfunk', 'trevco'];
     }
 }
