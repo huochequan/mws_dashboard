@@ -1,0 +1,1 @@
+<h2>404 NOT FOUND {{ $exception->getMessage() }}</h2>
