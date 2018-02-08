@@ -6,6 +6,7 @@ use App\Services\Trevco\NextSellerCacheManager;
 use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,3 +59,11 @@ Artisan::command('trevco:update-unshipped-order-count {seller?}', function ($sel
     Cache::put('salesDataInfo', $salesDataInfo, 60);
 })->describe('Display an inspiring quote');
 
+Artisan::command('trevco:prune-order-data', function () {
+	Order::whereDate('purchaseDate', '<', Carbon::now()->tz('America/Los_Angeles')->subDays(61)->toDateString())->delete();
+})->describe('Prune all orders unnecessary for calculations');
+
+Artisan::command('trevco:empty-reports-folder', function () {collect(Storage::disk('local')->files('amazon-mws/reports'))->map(function($file){
+		Storage::disk('local')->delete($file);
+	});
+})->describe('Prune all orders unnecessary for calculations');
