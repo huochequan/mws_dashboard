@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('trevco:sync-orders')->everyTenMinutes();
         $schedule->command('trevco:calculate-previous30')->hourly();
+        $schedule->command('trevco:prune-order-data')->timezone('America/Los_Angeles')->dailyAt('04:00');
+        $schedule->command('trevco:empty-reports-folder')->timezone('America/Los_Angeles')->dailyAt('04:10');
         $schedule->command('trevco:sync-orders --start=' . Carbon::now()->tz('America/Los_Angeles')->subDays(30)->format('d-m-Y') . ' --end=' . Carbon::now()->tz('America/Los_Angeles')->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('02:00');
         $schedule->command('trevco:sync-orders --start=' . Carbon::now()->tz('America/Los_Angeles')->subDays(60)->format('d-m-Y') . ' --end=' . Carbon::now()->tz('America/Los_Angeles')->subDays(31)->format('d-m-Y'))->timezone('America/Los_Angeles')->dailyAt('03:00');
     }
