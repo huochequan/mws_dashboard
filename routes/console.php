@@ -66,4 +66,4 @@ Artisan::command('trevco:prune-order-data', function () {
 Artisan::command('trevco:empty-reports-folder', function () {collect(Storage::disk('local')->files('amazon-mws/reports'))->map(function($file){
 		Storage::disk('local')->delete($file);
 	});
-})->describe('Prune all orders unnecessary for calculations');
+})->describe('Empty amazon mws report folder');
