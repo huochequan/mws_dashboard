@@ -91,3 +91,56 @@ if (! function_exists('str_before')) {
         return $search === '' ? $subject : explode($search, $subject)[0];
     }
 }
+
+
+
+if (! function_exists('get_walmart_auth_signature')) {
+    /**
+     * Get the portion of a string before a given value.
+     *
+     * @param  string  $subject
+     * @param  string  $search
+     * @return string
+     */
+    function get_walmart_auth_signature($URL, $RequestMethod, $Timestamp)
+    {
+      $WalmartPrivateKey = env('PRIVATE_KEY');//Your Walmart Private Key;
+      $WalmartConsumerID = env('CONSUMER_ID');//Your Walmart Comsumer Id;
+      // CONSTRUCT THE AUTH DATA WE WANT TO SIGN
+      $AuthData = $WalmartConsumerID."\n";
+      $AuthData .= $URL."\n";
+      $AuthData .= $RequestMethod."\n";
+      $AuthData .= $Timestamp."\n";
+      // GET AN OPENSSL USABLE PRIVATE KEY FROM THE WARMART SUPPLIED SECRET
+      $Pem = _ConvertPkcs8ToPem(base64_decode($WalmartPrivateKey));
+      $PrivateKey = openssl_pkey_get_private($Pem);
+      // SIGN THE DATA. USE sha256 HASH
+      $Hash = defined("OPENSSL_ALGO_SHA256") ? OPENSSL_ALGO_SHA256 : "sha256";
+      if (openssl_sign($AuthData, $Signature, $PrivateKey, $Hash))
+      { // IF ERROR RETURN NULL return null; }
+        //ENCODE THE SIGNATURE AND RETURN
+        return base64_encode($Signature);
+      }
+    }
+}
+
+if (! function_exists('_ConvertPkcs8ToPem')) {
+    /**
+     * Get the portion of a string before a given value.
+     *
+     * @param  string  $subject
+     * @param  string  $search
+     * @return string
+     */
+
+      function _ConvertPkcs8ToPem($der)
+      {
+        static $BEGIN_MARKER = "-----BEGIN PRIVATE KEY-----";
+        static $END_MARKER = "-----END PRIVATE KEY-----";
+        $key = base64_encode($der);
+        $pem = $BEGIN_MARKER . "\n";
+        $pem .= chunk_split($key, 64, "\n");
+        $pem .= $END_MARKER . "\n";
+        return $pem;
+      }
+}
