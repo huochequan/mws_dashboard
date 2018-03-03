@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/walmart_sync
 /.idea
 /.vagrant
 Homestead.json
