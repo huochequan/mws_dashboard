@@ -83,6 +83,10 @@ class OrderAPIDataRepository
             [
                 'id' => 2,
                 'seller' => 'trevco'
+            ],
+            [
+                'id' => 3,
+                'seller' => 'walmart'
             ]
         ];
         if (!$sellers) {
@@ -103,6 +107,10 @@ class OrderAPIDataRepository
                     [
                         'id' => 2,
                         'seller' => 'trevco'
+                    ],
+                    [
+                        'id' => 3,
+                        'seller' => 'walmart'
                     ]
                 ];
     }

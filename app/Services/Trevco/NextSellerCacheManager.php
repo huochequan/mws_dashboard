@@ -56,6 +56,6 @@ class NextSellerCacheManager
 
     private function initSellerQueueFromDatabase($queueKey=null)
     {
-        return ['popfunk', 'trevco'];
+        return ['popfunk', 'trevco', 'walmart'];
     }
 }
