@@ -74,6 +74,13 @@ export default Bar.extend({
         }, 0);
       })
 
+      this.walmartDailyFBMSalesArray = newOrders.map(function(elem) {
+        return elem.sales.filter(function(saleData) {
+          return saleData.seller == "walmart";
+        }).reduce(function (sum, value) {
+          return sum + value.dayFBMSales
+        }, 0);
+      })
       this.rerenderChart();
     }
   },
@@ -101,6 +108,11 @@ export default Bar.extend({
           label: 'Popfunk - FBM',
           backgroundColor: '#0072BB',
           data: this.popfunkDailyFBMSalesArray
+        },
+        {
+          label: 'Walmart',
+          backgroundColor: '#FFC220',
+          data: this.walmartDailyFBMSalesArray
         }
       ]
     }, {
